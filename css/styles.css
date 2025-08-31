@@ -1,0 +1,79 @@
+/* Custom overrides for Tailwind if needed */
+body {
+    font-family: Arial, sans-serif;
+}
+
+video {
+    max-height: 400px;
+}
+
+.carousel-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+}
+
+.carousel img {
+    flex-shrink: 0;
+    width: 7rem;
+    height: 7rem;
+    /* Matches h-28 (7rem) height for thumbnails */
+    object-fit: cover;
+    cursor: pointer;
+    /* Make images clickable */
+}
+
+/* Fix height and increase size for main display images */
+#menBraceletDisplay,
+#menNecklaceDisplay,
+#womenBraceletDisplay,
+#womenNecklaceDisplay {
+    max-width: 100%;
+    /* Full width for larger appearance */
+    height: 18rem;
+    /* Larger fixed height (h-72 in Tailwind) */
+    object-fit: cover;
+    /* Ensure images scale correctly */
+    position: relative;
+    /* Required for crossfade positioning */
+}
+
+/* Navigation buttons */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    z-index: 10;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.carousel-btn.prev {
+    left: 5%;
+}
+
+.carousel-btn.next {
+    right: 5%;
+}
+
+.carousel-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Modal styling */
+#modal {
+    z-index: 1000;
+}
