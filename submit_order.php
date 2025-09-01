@@ -1,43 +1,56 @@
 <?php
 header('Content-Type: application/json');
+require_once 'config/database.php';
 
-include_once 'config/database.php';
+function sanitize($field, $filter) {
+    return trim(filter_input(INPUT_POST, $field, $filter));
+}
 
 try {
-
-    // Get POST data
-    $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
-    $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
-    $address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_STRING);
-    $province = filter_input(INPUT_POST, 'province', FILTER_SANITIZE_STRING);
-    $city = filter_input(INPUT_POST, 'city', FILTER_SANITIZE_STRING);
-    $barangay = filter_input(INPUT_POST, 'barangay', FILTER_SANITIZE_STRING);
-    $menSet = filter_input(INPUT_POST, 'menSet', FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
+    // Input sanitization
+    $name     = sanitize('name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $phone    = sanitize('phone', FILTER_SANITIZE_NUMBER_INT);
+    $address  = sanitize('address', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $province = sanitize('province', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $city     = sanitize('city', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $barangay = sanitize('barangay', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $menSet   = filter_input(INPUT_POST, 'menSet', FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
     $womenSet = filter_input(INPUT_POST, 'womenSet', FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
 
-    // Validate data
+    // Validation
     $errors = [];
-    if (empty($name)) $errors[] = 'Full Name is required.';
-    if (empty($phone) || !preg_match('/^[0-9]{10,11}$/', $phone)) $errors[] = 'Valid Phone Number is required.';
-    if (empty($address)) $errors[] = 'Address is required.';
-    if (empty($province)) $errors[] = 'Province is required.';
-    if (empty($city)) $errors[] = 'City is required.';
-    if (empty($barangay)) $errors[] = 'Barangay is required.';
+    if (!$name) $errors[] = 'Full Name is required.';
+    if (!$phone || !preg_match('/^[0-9]{10,11}$/', $phone)) $errors[] = 'Valid Phone Number is required.';
+    if (!$address) $errors[] = 'Address is required.';
+    if (!$province) $errors[] = 'Province is required.';
+    if (!$city) $errors[] = 'City is required.';
+    if (!$barangay) $errors[] = 'Barangay is required.';
     if (!$menSet && !$womenSet) $errors[] = 'At least one product must be selected.';
 
-    if (!empty($errors)) {
+    if ($errors) {
+        http_response_code(400);
         echo json_encode(['success' => false, 'message' => implode(' ', $errors)]);
         exit;
     }
 
-    // Insert into database
+    // Insert
     $stmt = $pdo->prepare('
         INSERT INTO orders (name, phone, address, province, city, barangay, men_set, women_set)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (:name, :phone, :address, :province, :city, :barangay, :menSet, :womenSet)
     ');
-    $stmt->execute([$name, $phone, $address, $province, $city, $barangay, $menSet, $womenSet]);
+    $stmt->execute([
+        ':name'     => $name,
+        ':phone'    => $phone,
+        ':address'  => $address,
+        ':province' => $province,
+        ':city'     => $city,
+        ':barangay' => $barangay,
+        ':menSet'   => $menSet,
+        ':womenSet' => $womenSet
+    ]);
 
     echo json_encode(['success' => true, 'message' => 'Order submitted successfully']);
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Database error.']);
 }
