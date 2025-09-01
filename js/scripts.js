@@ -39,21 +39,21 @@ document.addEventListener("DOMContentLoaded", () => {
     // Modal Logic
     // ===============================
     const modal = document.getElementById("modal");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalMessage = document.getElementById("modalMessage");
-    const modalClose = document.getElementById("modalClose");
+    const modalTitle = document.getElementById("modal-title");
+    const modalMessage = document.getElementById("modal-message");
+    const modalClose = document.getElementById("modal-close");
 
     window.showModal = function (title, message) {
         if (modal && modalTitle && modalMessage) {
             modalTitle.textContent = title;
             modalMessage.textContent = message;
-            modal.classList.add("open"); // Add your CSS for .open { display:block; }
+            modal.classList.remove("hidden");
         }
     };
 
     function closeModal() {
         if (modal) {
-            modal.classList.remove("open");
+            modal.classList.add("hidden");
         }
     }
 
@@ -68,27 +68,66 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ===============================
-    // Carousel (if you have one)
+    // Carousel Logic
     // ===============================
-    const carousels = document.querySelectorAll(".carousel");
+    function setupCarousel(carousel) {
+        const slides = carousel.querySelectorAll("img");
+        const displaySelector = carousel.getAttribute("data-display");
+        const display = document.querySelector(displaySelector);
 
-    carousels.forEach((carousel) => {
         let index = 0;
-        const slides = carousel.querySelectorAll(".carousel-item");
+        let interval;
 
         function showSlide(i) {
-            slides.forEach((slide, idx) => {
-                slide.style.display = idx === i ? "block" : "none";
+            index = (i + slides.length) % slides.length; // wrap around
+            if (display) {
+                display.src = slides[index].src;
+                display.alt = slides[index].alt;
+            }
+        }
+
+        function startAutoPlay() {
+            stopAutoPlay();
+            interval = setInterval(() => {
+                showSlide(index + 1);
+            }, 5000); // 5 seconds
+        }
+
+        function stopAutoPlay() {
+            if (interval) clearInterval(interval);
+        }
+
+        // Initialize
+        showSlide(index);
+        startAutoPlay();
+
+        // Button controls
+        const prevBtn = carousel.parentElement.querySelector(".carousel-btn.prev");
+        const nextBtn = carousel.parentElement.querySelector(".carousel-btn.next");
+
+        if (prevBtn) {
+            prevBtn.addEventListener("click", () => {
+                showSlide(index - 1);
+                startAutoPlay();
             });
         }
 
-        if (slides.length > 0) {
-            showSlide(index);
-
-            setInterval(() => {
-                index = (index + 1) % slides.length;
-                showSlide(index);
-            }, 3000); // change every 3s
+        if (nextBtn) {
+            nextBtn.addEventListener("click", () => {
+                showSlide(index + 1);
+                startAutoPlay();
+            });
         }
-    });
+
+        // Thumbnail click
+        slides.forEach((slide, i) => {
+            slide.addEventListener("click", () => {
+                showSlide(i);
+                startAutoPlay();
+            });
+        });
+    }
+
+    // Initialize all carousels
+    document.querySelectorAll(".carousel").forEach(setupCarousel);
 });
