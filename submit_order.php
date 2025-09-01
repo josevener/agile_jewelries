@@ -1,16 +1,9 @@
 <?php
 header('Content-Type: application/json');
 
-// Database configuration
-$host = 'localhost';
-$dbname = 'agile_jewelries';
-$username = 'your_username'; // Replace with your MySQL username
-$password = 'your_password'; // Replace with your MySQL password
+include_once 'config/database.php';
 
 try {
-    // Connect to database
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Get POST data
     $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
@@ -39,8 +32,8 @@ try {
 
     // Insert into database
     $stmt = $pdo->prepare('
-        INSERT INTO orders (name, phone, address, province, city, barangay, men_set, women_set, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+        INSERT INTO orders (name, phone, address, province, city, barangay, men_set, women_set)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ');
     $stmt->execute([$name, $phone, $address, $province, $city, $barangay, $menSet, $womenSet]);
 

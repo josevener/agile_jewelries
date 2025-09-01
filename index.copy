@@ -7,10 +7,10 @@
     <title>Agile Jewelries</title>
     <!-- TailwindCSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/styles.css">
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body class="bg-white text-gray-900">
@@ -30,8 +30,6 @@
                 Your browser does not support the video tag.
             </video>
         </section>
-        
-        <hr class="border-t-4 border-gray-800 my-4">
 
         <!-- Men Section -->
         <section class="mt-8 text-center">
@@ -154,9 +152,15 @@
                 <input type="text" name="phone" placeholder="Phone Number" class="w-full border px-3 py-2 rounded" required>
                 <input type="text" name="address" placeholder="Address" class="w-full border px-3 py-2 rounded" required>
                 <div class="flex space-x-2">
-                    <input type="text" name="province" placeholder="Province" class="w-1/3 border px-3 py-2 rounded" required>
-                    <input type="text" name="city" placeholder="City" class="w-1/3 border px-3 py-2 rounded" required>
-                    <input type="text" name="barangay" placeholder="Barangay" class="w-1/3 border px-3 py-2 rounded" required>
+                    <select name="province" id="province" class="w-1/3 border px-3 py-2 rounded" required>
+                        <option selected disabled>Choose Province</option>
+                    </select>
+                    <select name="city" id="city" class="w-1/3 border px-3 py-2 rounded" required disabled>
+                        <option selected disabled>Choose City/Municipality</option>
+                    </select>
+                    <select name="barangay" id="barangay" class="w-1/3 border px-3 py-2 rounded" required disabled>
+                        <option selected disabled>Choose Barangay</option>
+                    </select>
                 </div>
                 <div>
                     <label class="flex items-center space-x-2">
@@ -209,7 +213,117 @@
     </main>
 
     <!-- Custom Script -->
-    <script src="js/scripts.js"></script>
+    <!-- <script src="js/scripts.js"></script>
+    <script>
+        // Load the JSON data from local file
+        const url = 'assets/data/philippines.json'; // Adjust path to where you saved the JSON file
+
+        $(document).ready(function () {
+            // Fetch and populate provinces
+            $.getJSON(url)
+                .done(function (data) {
+                    const provinces = Object.keys(data.province_list).sort();
+                    const $province = $('#province');
+                    provinces.forEach(province => {
+                        $province.append(`<option value="${province}">${province}</option>`);
+                    });
+                })
+                .fail(function (jqxhr, textStatus, error) {
+                    console.error('Error loading JSON:', textStatus, error);
+                    $('#modal-title').text('Error');
+                    $('#modal-message').text('Failed to load location data. Please try again later.');
+                    $('#modal').removeClass('hidden');
+                });
+
+            // When province changes, populate cities/municipalities
+            $('#province').on('change', function () {
+                const selectedProvince = $(this).val();
+                const $city = $('#city');
+                const $barangay = $('#barangay');
+
+                // Clear city and barangay dropdowns
+                $city.empty().append('<option selected disabled>Choose City/Municipality</option>').prop('disabled', true);
+                $barangay.empty().append('<option selected disabled>Choose Barangay</option>').prop('disabled', true);
+
+                if (selectedProvince) {
+                    $.getJSON(url)
+                        .done(function (data) {
+                            const cities = Object.keys(data.province_list[selectedProvince].municipality_list).sort();
+                            cities.forEach(city => {
+                                $city.append(`<option value="${city}">${city}</option>`);
+                            });
+                            $city.prop('disabled', false);
+                        })
+                        .fail(function () {
+                            $('#modal-title').text('Error');
+                            $('#modal-message').text('Failed to load cities. Please try again.');
+                            $('#modal').removeClass('hidden');
+                        });
+                }
+            });
+
+            // When city changes, populate barangays
+            $('#city').on('change', function () {
+                const selectedProvince = $('#province').val();
+                const selectedCity = $(this).val();
+                const $barangay = $('#barangay');
+
+                // Clear barangay dropdown
+                $barangay.empty().append('<option selected disabled>Choose Barangay</option>').prop('disabled', true);
+
+                if (selectedCity) {
+                    $.getJSON(url)
+                        .done(function (data) {
+                            const barangays = data.province_list[selectedProvince].municipality_list[selectedCity].barangay_list.sort();
+                            barangays.forEach(barangay => {
+                                $barangay.append(`<option value="${barangay}">${barangay}</option>`);
+                            });
+                            $barangay.prop('disabled', false);
+                        })
+                        .fail(function () {
+                            $('#modal-title').text('Error');
+                            $('#modal-message').text('Failed to load barangays. Please try again.');
+                            $('#modal').removeClass('hidden');
+                        });
+                }
+            });
+
+            // Form submission
+            $('#checkoutForm').on('submit', function (e) {
+                e.preventDefault();
+                const name = $('input[name="name"]').val();
+                const phone = $('input[name="phone"]').val();
+                const address = $('input[name="address"]').val();
+                const province = $('#province').val();
+                const city = $('#city').val();
+                const barangay = $('#barangay').val();
+                const menSet = $('input[name="men"]').is(':checked') ? 'Men\'s Necklace & Bracelet Set' : '';
+                const womenSet = $('input[name="women"]').is(':checked') ? 'Women\'s Necklace & Bracelet Set' : '';
+
+                if (!name || !phone || !address || !province || !city || !barangay || (!menSet && !womenSet)) {
+                    $('#modal-title').text('Error');
+                    $('#modal-message').text('Please fill out all fields and select at least one product.');
+                    $('#modal-order-details').empty();
+                    $('#modal').removeClass('hidden');
+                    return;
+                }
+
+                $('#modal-title').text('Order Confirmation');
+                $('#modal-message').text('Thank you for your order! Here are the details:');
+                $('#modal-order-details').html(`
+                    <p><strong>Name:</strong> ${name}</p>
+                    <p><strong>Phone:</strong> ${phone}</p>
+                    <p><strong>Address:</strong> ${address}, ${barangay}, ${city}, ${province}</p>
+                    <p><strong>Products:</strong> ${[menSet, womenSet].filter(Boolean).join(', ')}</p>
+                `);
+                $('#modal').removeClass('hidden');
+            });
+
+            $('#modal-close').on('click', function () {
+                $('#modal').addClass('hidden');
+            });
+        });
+    </script> -->
 </body>
 
 </html>
