@@ -9,9 +9,7 @@ CREATE TABLE users (
     password_hash VARCHAR(255) NOT NULL,
     role ENUM('admin', 'manager', 'staff', 'customer') DEFAULT 'customer',
     STATUS ENUM('active', 'inactive', 'suspended') DEFAULT 'active',
-    last_login TIMESTAMP NULL DEFAULT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    last_login TIMESTAMP NULL DEFAULT NULL
 );
 
 
@@ -25,7 +23,5 @@ CREATE TABLE orders (
     barangay VARCHAR(255) NOT NULL,
     men_set BOOLEAN DEFAULT FALSE,
     women_set BOOLEAN DEFAULT FALSE,
-    ip_address VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ip_address VARCHAR(255) NOT NULL
 );

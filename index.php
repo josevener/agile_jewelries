@@ -30,7 +30,7 @@
                 Your browser does not support the video tag.
             </video>
         </section>
-        
+
         <hr class="border-t-4 border-gray-800 my-4">
 
         <!-- Men Section -->
@@ -150,49 +150,111 @@
         <section id="order-form" class="mt-12">
             <h2 class="text-center font-bold text-xl mb-4">Order Form</h2>
             <form id="checkoutForm" class="space-y-3">
-                <input type="text" name="name" placeholder="Full Name" class="w-full border px-3 py-2 rounded" required>
-                <input type="text" name="phone" placeholder="Phone Number" class="w-full border px-3 py-2 rounded" required>
-                <input type="text" name="address" placeholder="Address" class="w-full border px-3 py-2 rounded" required>
+                <input type="text" name="customer_name" placeholder="Full Name" class="w-full border px-3 py-2 rounded border border-gray-800 border-2" required>
+                <input type="text" name="phone_number" placeholder="Phone Number" class="w-full border px-3 py-2 rounded border border-gray-800 border-2" required>
+                <input type="text" name="address" placeholder="Address" class="w-full border px-3 py-2 rounded border border-gray-800 border-2" required>
                 <div class="flex space-x-2">
-                    <input type="text" name="province" placeholder="Province" class="w-1/3 border px-3 py-2 rounded" required>
-                    <input type="text" name="city" placeholder="City" class="w-1/3 border px-3 py-2 rounded" required>
-                    <input type="text" name="barangay" placeholder="Barangay" class="w-1/3 border px-3 py-2 rounded" required>
+                    <input type="text" name="province" placeholder="Province" class="w-1/3 border px-3 py-2 rounded border border-gray-800 border-2" required>
+                    <input type="text" name="city" placeholder="City" class="w-1/3 border px-3 py-2 rounded border border-gray-800 border-2" required>
+                    <input type="text" name="barangay" placeholder="Barangay" class="w-1/3 border px-3 py-2 rounded border border-gray-800 border-2" required>
                 </div>
-                <div>
+                <div class="border border-gray-800 border-2 p-2 rounded space-y-2">
                     <label class="flex items-center space-x-2">
-                        <input type="checkbox" name="men" value="Men Set"> <span>Men's Necklace & Bracelet Set</span>
+                        <input type="checkbox" name="men_set" value="1">
+                        <span class="text-sm">
+                            Japan Cut 25 Inches Necklace & 8 inches Bracelet Set with Clip Lock for MAN ₱999.00
+                        </span>
                     </label>
                     <label class="flex items-center space-x-2">
-                        <input type="checkbox" name="women" value="Women Set"> <span>Women's Necklace & Bracelet Set</span>
+                        <input type="checkbox" name="women_set" value="1">
+                        <span class="text-sm">
+                            Japan Cut 25 Inches Necklace & 8 inches Bracelet Set with Clip Lock for WOMAN ₱999.00
+                        </span>
                     </label>
                 </div>
-                <button type="submit" class="w-full bg-black text-white py-2 rounded">Buy Now</button>
+                <button type="submit" class="w-full bg-black text-white py-2 rounded" id="submit-btn">Buy Now</button>
             </form>
         </section>
+        
+        <div class="flex items-center justify-center p-4 text-center font-semibold text-sm sm:text-base md:text-lg lg:text-xl">
+            🚚 CASH ON DELIVERY NATIONWIDE 📦
+        </div>
 
         <!-- Reviews -->
         <section class="mt-12">
             <h2 class="font-bold text-xl text-center mb-4">Customer Reviews</h2>
-            <div class="text-center">
-                <p class="text-2xl font-bold">5.0 ⭐⭐⭐⭐⭐</p>
-                <p class="text-sm text-gray-500">87 Reviews</p>
+            <div class="text-start">
+                <p class="text-2xl font-bold px-6">5.0 ⭐⭐⭐⭐⭐ <span class="text-sm justify-center">87 Reviews</span></p>
+                <div class="mt-2 text-lg text-gray-600 space-y-2 mt-4">
+                    <div class="flex items-center justify-center space-x-2">
+                        <span class="w-12 text-left">5 ⭐</span>
+                        <div class="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-yellow-500" style="width: (80/87)*100%"></div>
+                        </div>
+                        <span class="w-12 text-yellow-800">80</span>
+                    </div>
+                    <div class="flex items-center justify-center space-x-2">
+                        <span class="w-12 text-left">4 ⭐</span>
+                        <div class="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-yellow-500" style="width: 0%"></div>
+                        </div>
+                        <span class="w-12 text-gray-500">0</span>
+                    </div>
+                    <div class="flex items-center justify-center space-x-2">
+                        <span class="w-12 text-left">3 ⭐</span>
+                        <div class="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-yellow-500" style="width: 0%"></div>
+                        </div>
+                        <span class="w-12 text-gray-500">0</span>
+                    </div>
+                    <div class="flex items-center justify-center space-x-2">
+                        <span class="w-12 text-left">2 ⭐</span>
+                        <div class="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-yellow-500" style="width: 0%"></div>
+                        </div>
+                        <span class="w-12 text-gray-500">0</span>
+                    </div>
+                    <div class="flex items-center justify-center space-x-2">
+                        <span class="w-12 text-left">1 ⭐</span>
+                        <div class="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-yellow-500" style="width: 0%"></div>
+                        </div>
+                        <span class="w-12 text-gray-500">0</span>
+                    </div>
+                </div>
             </div>
             <div class="mt-6 space-y-6">
-                <div class="flex items-center space-x-3">
-                    <img src="assets/img/reviews/review1.png" class="w-16 h-16 rounded" alt="Customer Review 1">
-                    <p class="text-sm">“I received it already and it is beautiful ❤️”</p>
+                <div class="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg">
+                    <img src="assets/img/reviews/review1.png" class="w-40 h-40 rounded-lg object-cover hover:scale-105 transition-transform duration-200 cursor-pointer review-image" alt="Customer Review 1" data-large-src="assets/img/reviews/review1.png">
+                    <div class="flex-1">
+                        <p class="text-base italic">“I received it already and it is beautiful ❤️ Thank you!”</p>
+                        <p class="text-lg text-yellow-500 mt-1">★★★★★</p>
+                        <p class="text-xs text-gray-600 mt-1">— Edwin C.</p>
+                    </div>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <p class="text-sm">“Thanks much, I already ordered twice… great quality”</p>
-                    <img src="assets/img/reviews/review2.png" class="w-16 h-16 rounded" alt="Customer Review 2">
+                <div class="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg">
+                    <div class="flex-1 text-right">
+                        <p class="text-base italic">“Thanks much, I already ordered twice… great quality”</p>
+                        <p class="text-lg text-yellow-500 mt-1">★★★★★</p>
+                        <p class="text-xs text-gray-600 mt-1">— Mark S.</p>
+                    </div>
+                    <img src="assets/img/reviews/review2.png" class="w-40 h-40 rounded-lg object-cover hover:scale-105 transition-transform duration-200 cursor-pointer review-image" alt="Customer Review 2" data-large-src="assets/img/reviews/review2.png">
                 </div>
-                <div class="flex items-center space-x-3">
-                    <img src="assets/img/reviews/review3.png" class="w-16 h-16 rounded" alt="Customer Review 3">
-                    <p class="text-sm">“I received it already and it is beautiful ❤️”</p>
+                <div class="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg">
+                    <img src="assets/img/reviews/review3.png" class="w-40 h-40 rounded-lg object-cover hover:scale-105 transition-transform duration-200 cursor-pointer review-image" alt="Customer Review 3" data-large-src="assets/img/reviews/review3.png">
+                    <div class="flex-1">
+                        <p class="text-base italic">“Wowww this is my first time to this store and d ako nabigo sa expectation ko, so uulit at uulit ako hehehe 99% yan❤️”</p>
+                        <p class="text-lg text-yellow-500 mt-1">★★★★★</p>
+                        <p class="text-xs text-gray-600 mt-1">— Emily R.</p>
+                    </div>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <p class="text-sm">“Thanks much, I already ordered twice… great quality”</p>
-                    <img src="assets/img/reviews/review4.png" class="w-16 h-16 rounded" alt="Customer Review 4">
+                <div class="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg">
+                    <div class="flex-1 text-right">
+                        <p class="text-base italic">“Maraming salamat po natanggap ko na yung bracelet napakaganda po. oorder ako ulit with necklace na po”</p>
+                        <p class="text-lg text-yellow-500 mt-1">★★★★★</p>
+                        <p class="text-xs text-gray-600 mt-1">— Joshua P.</p>
+                    </div>
+                    <img src="assets/img/reviews/review4.png" class="w-40 h-40 rounded-lg object-cover hover:scale-105 transition-transform duration-200 cursor-pointer review-image" alt="Customer Review 4" data-large-src="assets/img/reviews/review4.png">
                 </div>
             </div>
         </section>
@@ -201,7 +263,7 @@
         <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
             <div class="bg-white p-6 rounded-lg max-w-md w-full">
                 <h2 id="modal-title" class="text-xl font-bold mb-4"></h2>
-                <p id="modal-message" class="mb-4"></p>
+                <div id="modal-message" class="mb-4"></div>
                 <div id="modal-order-details" class="mb-4"></div>
                 <button id="modal-close" class="bg-black text-white px-4 py-2 rounded">Close</button>
             </div>
