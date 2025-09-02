@@ -3,7 +3,7 @@
 $host = getenv('DB_HOST') ?: 'localhost';
 $db   = getenv('DB_NAME') ?: 'agile_jewelries';
 $user = getenv('DB_USER') ?: 'root';
-$pass = getenv('DB_PASS') ?: '12345678';
+$pass = getenv('DB_PASS') ?: '';
 $charset = 'utf8';
 
 $dsn = "mysql:host=$host;dbname=$db;";

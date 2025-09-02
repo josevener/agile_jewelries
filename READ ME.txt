@@ -1,0 +1,13 @@
+SQL Query!!
+
+
+Update:
+
+9.2.2025
+
+ALTER TABLE orders 
+ADD COLUMN order_status VARCHAR(255) NOT NULL AFTER women_set DEFAULT 'pending'
+
+
+ALTER TABLE users 
+DROP COLUMN username

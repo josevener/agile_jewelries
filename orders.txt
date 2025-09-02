@@ -1,0 +1,9 @@
+                                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 view-order" data-order-id="<?php echo htmlspecialchars($order['id']); ?>">View</a>
+                                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 edit-order" data-order-id="<?php echo htmlspecialchars($order['id']); ?>">Edit</a>
+
+
+                                                            
+                                                            <a href="#" class="block px-4 py-2 text-sm text-danger hover:bg-gray-100 dark:hover:bg-gray-700 delete-order"
+                                                                data-order-id="<?php echo htmlspecialchars($order['id']); ?>">
+                                                                Delete
+                                                            </a>

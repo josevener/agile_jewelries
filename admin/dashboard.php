@@ -1,16 +1,27 @@
 <?php
+
 require_once '../config/database.php';
+require_once 'auth.php';
+checkAuth();
 
 // Fetch dynamic dashboard metric (total_orders)
 try {
-    $stmt = $pdo->query('SELECT COUNT(*) as total_orders FROM orders');
-    $total_orders = $stmt->fetch(PDO::FETCH_ASSOC)['total_orders'];
+    $stmt = $pdo->query("
+SELECT 
+    COUNT(*) AS total_orders,
+    SUM(CASE WHEN men_set = 1 OR women_set = 1 THEN 1 ELSE 0 END) AS sets_count,
+    SUM(CASE WHEN men_set = 1 OR women_set = 1 THEN 1 ELSE 0 END) * 999 AS total_amount
+FROM orders
+");
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $total_orders = $result['total_orders'];
+    $sets_count   = $result['sets_count'];
+    $revenue      = $result['total_amount'];
 } catch (PDOException $e) {
     $error = 'Database error: ' . $e->getMessage();
 }
-
-// Static data for revenue, users, products, and recent activities
-$revenue = 10000.00; // Static revenue since total_amount column is missing
+// Static revenue since total_amount column is missing
 $total_users = 320;
 $total_products = 45;
 $recent_activities = [
@@ -91,10 +102,10 @@ $recent_activities = [
                                 </div>
                             </div>
                             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md flex items-center gap-4">
-                                <i data-lucide="dollar-sign" class="w-8 h-8 text-primary"></i>
+                                <i data-lucide="banknote" class="w-8 h-8 text-primary"></i>
                                 <div>
                                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Revenue</h3>
-                                    <p class="text-3xl font-bold text-primary">$<?php echo number_format($revenue, 2); ?></p>
+                                    <p class="text-3xl font-bold text-primary"><?php echo number_format($revenue, 2); ?></p>
                                     <p class="text-sm text-success">+8% from last month</p>
                                 </div>
                             </div>
