@@ -22,8 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const errors = [];
             if (!customerName) errors.push("Please enter your full name.");
-            if (!phoneNumber || !/^\+?[0-9]{10,15}$/.test(phoneNumber)) {
-                errors.push("Please enter a valid phone number (10-15 digits, optional +).");
+            if (!phoneNumber || !/^\+?[0-9]{10,11}$/.test(phoneNumber)) {
+                errors.push("Please enter a valid phone number.");
             }
             if (!address) errors.push("Please enter your address.");
             if (!province) errors.push("Please enter your province.");

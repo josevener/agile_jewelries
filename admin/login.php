@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['is_logged_in'] = true;
 
     // Redirect to last page or dashboard
-    $redirect = $_SESSION['redirect_to'] ?? 'dashboard.php';
+    $redirect = $_SESSION['redirect_to'] ?? 'analytics.php';
     unset($_SESSION['redirect_to']);
     header("Location: {$redirect}");
     exit;
