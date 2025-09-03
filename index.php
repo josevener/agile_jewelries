@@ -47,7 +47,7 @@
                 <!-- Carousel with buttons -->
                 <div class="carousel-container">
                     <button class="carousel-btn prev" data-carousel="#menBraceletCarousel" aria-label="Previous Men's Bracelet Image">&#9664;</button>
-                    <div id="menBraceletCarousel" class="carousel" data-display="#menBraceletDisplay">
+                    <div id="menBraceletCarousel" class="carousel flex justify-center items-center gap-2" data-display="#menBraceletDisplay">
                         <img src="assets/img/men/bracelet_men.png" class="h-28 rounded flex-shrink-0" alt="Men's Bracelet Option 1" loading="lazy">
                         <img src="assets/img/men/hand_bracelet_men.png" class="h-28 rounded flex-shrink-0" alt="Men's Bracelet Option 2" loading="lazy">
                         <img src="assets/img/men/hand_necklace_women.png" class="h-28 rounded flex-shrink-0" alt="Men's Bracelet Option 3" loading="lazy">
@@ -67,7 +67,7 @@
                 <!-- Carousel with buttons -->
                 <div class="carousel-container">
                     <button class="carousel-btn prev" data-carousel="#menNecklaceCarousel" aria-label="Previous Men's Necklace Image">&#9664;</button>
-                    <div id="menNecklaceCarousel" class="carousel" data-display="#menNecklaceDisplay">
+                    <div id="menNecklaceCarousel" class="carousel flex justify-center items-center gap-2 overflow-hidden" data-display="#menNecklaceDisplay">
                         <img src="assets/img/men/necklace_men.png" class="h-28 rounded flex-shrink-0" alt="Men's Necklace Option 1" loading="lazy">
                         <img src="assets/img/men/necklace_men2.png" class="h-28 rounded flex-shrink-0" alt="Men's Necklace Option 2" loading="lazy">
                         <img src="assets/img/men/necklace_men3.png" class="h-28 rounded flex-shrink-0" alt="Men's Necklace Option 3" loading="lazy">
@@ -104,7 +104,7 @@
                 <!-- Carousel with buttons -->
                 <div class="carousel-container">
                     <button class="carousel-btn prev" data-carousel="#womenBraceletCarousel" aria-label="Previous Women's Bracelet Image">&#9664;</button>
-                    <div id="womenBraceletCarousel" class="carousel" data-display="#womenBraceletDisplay">
+                    <div id="womenBraceletCarousel" class="carousel flex justify-center items-center gap-2 overflow-hidden" data-display="#womenBraceletDisplay">
                         <img src="assets/img/women/bracelet1.png" class="h-28 rounded flex-shrink-0" alt="Women's Bracelet Option 1" loading="lazy">
                         <img src="assets/img/women/bracelet2.png" class="h-28 rounded flex-shrink-0" alt="Women's Bracelet Option 2" loading="lazy">
                         <img src="assets/img/women/bracelet3.png" class="h-28 rounded flex-shrink-0" alt="Women's Bracelet Option 3" loading="lazy">
@@ -124,7 +124,7 @@
                 <!-- Carousel with buttons -->
                 <div class="carousel-container">
                     <button class="carousel-btn prev" data-carousel="#womenNecklaceCarousel" aria-label="Previous Women's Necklace Image">&#9664;</button>
-                    <div id="womenNecklaceCarousel" class="carousel" data-display="#womenNecklaceDisplay">
+                    <div id="womenNecklaceCarousel" class="carousel flex justify-center items-center gap-2 overflow-hidden" data-display="#womenNecklaceDisplay">
                         <img src="assets/img/women/women.png" class="h-28 rounded flex-shrink-0" alt="Women's Necklace Option 1" loading="lazy">
                         <img src="assets/img/women/necklace1.png" class="h-28 rounded flex-shrink-0" alt="Women's Necklace Option 2" loading="lazy">
                         <img src="assets/img/women/necklace2.png" class="h-28 rounded flex-shrink-0" alt="Women's Necklace Option 3" loading="lazy">
