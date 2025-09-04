@@ -67,7 +67,7 @@ try {
     </aside>
 
     <!-- Work Area -->
-    <main class="flex-1 bg-teal-50 rounded-t-xl overflow-auto">
+    <main class="flex-1 bg-gray-200 rounded-t-xl overflow-auto">
       <div id="work-area" class="p-4" style="height: calc(100vh - 84px);">
         <!-- Title Bar -->
         <div class="mb-4">

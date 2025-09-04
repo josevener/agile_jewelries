@@ -25,7 +25,7 @@
             <hr class="border-t-4 border-gray-800 my-2">
             <h1 class="text-lg font-bold">Agile Jewelries</h1>
             <hr class="border-t-4 border-gray-800 my-4">
-            <video class="w-full rounded object-cover" autoplay muted loop controls>
+            <video class="w-full rounded object-cover" autoplay muted loop controls loading="lazy">
                 <source src="assets/video/vid1.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -84,7 +84,7 @@
             <!-- Pricing -->
             <div class="mt-4">
                 <p class="line-through text-red-500">₱1,699.00</p>
-                <p class="text-2xl font-bold text-green-600">₱999.00</p>
+                <p class="text-2xl font-bold text-green-600">₱898.00</p>
                 <p class="text-sm text-gray-600">FREE SHIPPING AND COD NATIONWIDE</p>
                 <button class="mt-2 bg-black text-white px-6 py-2 rounded buy-btn">Buy Now</button>
             </div>
@@ -140,7 +140,7 @@
             <!-- Pricing -->
             <div class="mt-4">
                 <p class="line-through text-red-500">₱1,699.00</p>
-                <p class="text-2xl font-bold text-green-600">₱999.00</p>
+                <p class="text-2xl font-bold text-green-600">₱898.00</p>
                 <p class="text-sm text-gray-600">FREE SHIPPING AND COD NATIONWIDE</p>
                 <button class="mt-2 bg-black text-white px-6 py-2 rounded buy-btn">Buy Now</button>
             </div>
@@ -162,13 +162,13 @@
                     <label class="flex items-center space-x-2">
                         <input type="checkbox" name="men_set" value="1">
                         <span class="text-sm">
-                            Japan Cut 25 Inches Necklace & 8 inches Bracelet Set with Clip Lock for MAN ₱999.00
+                            Japan Cut 25 Inches Necklace & 8 inches Bracelet Set with Clip Lock for MAN ₱898.00
                         </span>
                     </label>
                     <label class="flex items-center space-x-2">
                         <input type="checkbox" name="women_set" value="1">
                         <span class="text-sm">
-                            Japan Cut 25 Inches Necklace & 8 inches Bracelet Set with Clip Lock for WOMAN ₱999.00
+                            Japan Cut 25 Inches Necklace & 8 inches Bracelet Set with Clip Lock for WOMAN ₱898.00
                         </span>
                     </label>
                 </div>

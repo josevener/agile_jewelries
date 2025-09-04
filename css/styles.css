@@ -31,6 +31,10 @@ video {
     /* Make images clickable */
 }
 
+.carousel img.active {
+    border: 25px solid red !important;
+}
+
 /* Fix height and increase size for main display images */
 #menBraceletDisplay,
 #menNecklaceDisplay,
