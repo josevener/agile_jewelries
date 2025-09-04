@@ -154,9 +154,15 @@
                 <input type="text" name="phone_number" placeholder="Phone Number" class="w-full border px-3 py-2 rounded border border-gray-800 border-2" required>
                 <input type="text" name="address" placeholder="Address" class="w-full border px-3 py-2 rounded border border-gray-800 border-2" required>
                 <div class="flex space-x-2">
-                    <input type="text" name="province" placeholder="Province" class="w-1/3 border px-3 py-2 rounded border border-gray-800 border-2" required>
-                    <input type="text" name="city" placeholder="City" class="w-1/3 border px-3 py-2 rounded border border-gray-800 border-2" required>
-                    <input type="text" name="barangay" placeholder="Barangay" class="w-1/3 border px-3 py-2 rounded border border-gray-800 border-2" required>
+                    <select name="province" id="province-select" class="w-1/3 border text-xs sm:text-sm px-3 py-2 rounded border-gray-800 border-2 cursor-pointer" required>
+                        <option value="" disabled selected>Select Province</option>
+                    </select>
+                    <select name="city" id="city-select" class="w-1/3 border text-xs sm:text-sm px-3 py-2 rounded border-gray-800 border-2 cursor-pointer" required disabled>
+                        <option value="" disabled selected>Select City/Municipality</option>
+                    </select>
+                    <select name="barangay" id="barangay-select" class="w-1/3 border text-xs sm:text-sm px-3 py-2 rounded border-gray-800 border-2 cursor-pointer" required disabled>
+                        <option value="" disabled selected>Select Barangay</option>
+                    </select>
                 </div>
                 <div class="border border-gray-800 border-2 p-2 rounded space-y-2">
                     <label class="flex items-center space-x-2">
@@ -175,7 +181,7 @@
                 <button type="submit" class="w-full bg-black text-white py-2 rounded" id="submit-btn">Buy Now</button>
             </form>
         </section>
-        
+
         <div class="flex items-center justify-center p-4 text-center font-semibold text-sm sm:text-base md:text-lg lg:text-xl">
             🚚 CASH ON DELIVERY NATIONWIDE 📦
         </div>
@@ -267,6 +273,17 @@
                 <div id="modal-order-details" class="mb-4"></div>
                 <button id="modal-close" class="bg-black text-white px-4 py-2 rounded">Close</button>
             </div>
+        </div>
+
+        <!-- Fixed Footer (Desktop Only) -->
+        <div class="fixed bottom-2 left-2 hidden sm:block">
+            <p class="text-xs text-gray-600">
+                <em>
+                    <a href="https://zentrix-solutions.vercel.app" target="_blank" class="hover:underline">
+                        Powered by: Zentrix Solutions
+                    </a>
+                </em>
+            </p>
         </div>
     </main>
 
