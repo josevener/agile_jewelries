@@ -11,3 +11,19 @@ ADD COLUMN order_status VARCHAR(255) NOT NULL DEFAULT 'pending' AFTER women_set
 
 ALTER TABLE users 
 DROP COLUMN username
+
+
+Update:
+
+9.4.2025
+
+ALTER TABLE orders
+ADD COLUMN amount DECIMAL(10, 2) AFTER women_set
+
+UPDATE orders
+SET amount = 
+    (CASE 
+        WHEN men_set = 1 AND women_set = 1 THEN 898 * 2
+        WHEN men_set = 1 OR women_set = 1 THEN 898
+        ELSE 0
+     END);

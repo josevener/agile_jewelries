@@ -4,40 +4,60 @@ require_once 'auth.php';
 checkAuth();
 
 try {
-  $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+  $stmt = $pdo->query("
+        SELECT 
+            COUNT(*) AS total_orders,
+            SUM(amount) AS total_amount,
+            SUM(CASE WHEN men_set = 1 OR women_set = 1 THEN 1 ELSE 0 END) AS sets_count,
+            SUM(CASE WHEN (order_status = 'completed') AND (men_set = 1 OR women_set = 1) THEN amount ELSE 0 END) AS revenue,
+            SUM(CASE WHEN order_status = 'completed' THEN 1 ELSE 0 END) AS completed_orders,
+            SUM(CASE WHEN order_status = 'pending' THEN 1 ELSE 0 END) AS pending_orders
+        FROM orders
+    ");
+  $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-  $query = 'SELECT * FROM orders';
-  if ($search !== '') {
-    $query .= ' WHERE customer_name LIKE ? 
-                OR phone_number LIKE ? 
-                OR address LIKE ? 
-                OR order_status LIKE ? 
-                OR barangay LIKE ? 
-                OR city LIKE ? 
-                OR province LIKE ?';
-  }
-  $query .= ' ORDER BY id DESC';
+  $total_orders = $result['total_orders'];
+  $sets_count   = $result['sets_count'];
+  $revenue      = $result['revenue'];
+  $completed_orders = $result['completed_orders'];
+  $pending_orders = $result['pending_orders'];
 
-  $stmt = $pdo->prepare($query);
+  // Monthly sales for chart
+  $salesStmt = $pdo->query("
+      SELECT 
+          DATE_FORMAT(created_at, '%b') AS month,
+          SUM(CASE WHEN order_status = 'completed' 
+                   THEN (CASE WHEN men_set = 1 OR women_set = 1 THEN 999 ELSE 0 END) 
+                   ELSE 0 END) AS monthly_revenue
+      FROM orders
+      WHERE YEAR(created_at) = YEAR(CURDATE())
+      GROUP BY MONTH(created_at)
+      ORDER BY MONTH(created_at)
+  ");
 
-  if ($search !== '') {
-    $searchParam = "%$search%";
-    $values = array_fill(0, 7, $searchParam); // Fixed: 7 parameters instead of 6
-    $stmt->execute($values);
-  } else {
-    $stmt->execute();
-  }
+  $salesData = $salesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-  $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-  $orders = array_map(function ($o) {
-    $o['men_set'] = $o['men_set'] ? 'Yes' : 'No';
-    $o['women_set'] = $o['women_set'] ? 'Yes' : 'No';
-    return $o;
-  }, $orders);
+  $labels   = array_column($salesData, 'month');
+  $revenues = array_column($salesData, 'monthly_revenue');
 } catch (PDOException $e) {
   $error = 'Database error: ' . $e->getMessage();
 }
+
+// Static revenue since total_amount column is missing
+$total_users = 320;
+$total_products = 45;
+$recent_activities = [
+  [
+    'type' => 'user',
+    'description' => 'New user registered: <strong>Emily Davis</strong>',
+    'timestamp' => '2025-09-01 14:00:00'
+  ],
+  [
+    'type' => 'order',
+    'description' => 'New order placed: <strong>Order #1234</strong>',
+    'timestamp' => '2025-09-01 13:00:00'
+  ]
+];
 ?>
 
 <!DOCTYPE html>
@@ -50,6 +70,7 @@ try {
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@heroicons/react/24/outline/index.js"></script>
   <link rel="stylesheet" href="../assets/fontawesome/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
@@ -67,383 +88,140 @@ try {
     </aside>
 
     <!-- Work Area -->
-    <main class="flex-1 bg-teal-50 rounded-t-xl overflow-auto">
+    <main class="flex-1 bg-gray-200 rounded-t-xl overflow-auto">
       <div id="work-area" class="p-4" style="height: calc(100vh - 84px);">
         <!-- Title Bar -->
         <div class="mb-4">
-          <h2 class="text-2xl font-bold text-gray-800">Analytics Overview</h2>
-          <p class="text-sm text-gray-600">
+          <h2 class="text-2xl font-bold text-teal-900">Analytics Overview</h2>
+          <p class="text-sm text-teal-800">
             View key insights and performance metrics to monitor growth, track orders,
             and analyze sales performance effectively.
           </p>
         </div>
-        
-        <!-- Search Bar -->
-        <div class="bg-white rounded-t-lg p-2 flex flex-row gap-2">
-          <div class="relative flex-1 max-w-[326px]">
-            <input
-              id="search-input"
-              type="text"
-              placeholder="Search Employee Name or Code"
-              class="w-full border border-gray-300 rounded-md p-2 pr-20 text-sm">
 
-            <div class="absolute inset-y-0 right-0 flex items-center space-x-1 pr-2">
-              <button id="clear-search" class="hidden text-gray-500 hover:text-gray-700">
-                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-              <button id="search-button" class="text-gray-500 hover:text-gray-700">
-                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
+        <?php if (isset($error)): ?>
+          <div class="text-red-600 text-sm"><?= htmlspecialchars($error) ?></div>
+        <?php else: ?>
+
+          <!-- Employee Grid -->
+          <!-- <div class="bg-white rounded-b-lg shadow-md flex flex-col" style="height: calc(100vh - 220px);"></div> -->
+
+          <div id="employee-dashboard-content" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 cursor-pointer">
+            <!-- Total Orders -->
+            <div class="bg-gradient-to-br from-white to-teal-50 text-teal-800 rounded-2xl shadow-lg p-5 h-48 flex flex-col justify-between transition hover:shadow-xl hover:scale-[1.02]">
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold">Total Orders</h3>
+              </div>
+              <div class="flex items-center justify-center flex-1">
+                <div class="flex items-center space-x-3">
+                  <div class="bg-teal-100 p-3 rounded-full shadow-sm">
+                    <i class="fas fa-shopping-cart text-2xl text-teal-600"></i>
+                  </div>
+                  <div class="flex flex-col">
+                    <p class="text-2xl font-bold">
+                      <?= htmlspecialchars($total_orders) ?>
+                    </p>
+                    <span class="text-sm text-teal-500">All-time</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Completed Orders -->
+            <div class="bg-gradient-to-br from-white to-green-50 text-green-800 rounded-2xl shadow-lg p-5 h-48 flex flex-col justify-between transition hover:shadow-xl hover:scale-[1.02]">
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold">Completed Orders</h3>
+              </div>
+              <div class="flex items-center justify-center flex-1">
+                <div class="flex items-center space-x-3">
+                  <div class="bg-green-100 p-3 rounded-full shadow-sm">
+                    <i class="fas fa-check-circle text-2xl text-green-600"></i>
+                  </div>
+                  <div class="flex flex-col">
+                    <p class="text-2xl font-bold"><?= htmlspecialchars($completed_orders) ?></p>
+                    <span class="text-sm text-green-500">Successful</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pending Orders -->
+            <div class="bg-gradient-to-br from-white to-yellow-50 text-yellow-800 rounded-2xl shadow-lg p-5 h-48 flex flex-col justify-between transition hover:shadow-xl hover:scale-[1.02]">
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold">Pending Orders</h3>
+              </div>
+              <div class="flex items-center justify-center flex-1">
+                <div class="flex items-center space-x-3">
+                  <div class="bg-yellow-100 p-3 rounded-full shadow-sm">
+                    <i class="fas fa-hourglass-half text-2xl text-yellow-600"></i>
+                  </div>
+                  <div class="flex flex-col">
+                    <p class="text-2xl font-bold"><?= htmlspecialchars($pending_orders) ?></p>
+                    <span class="text-sm text-yellow-500">Awaiting Action</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Revenue -->
+            <div class="bg-gradient-to-br from-white to-indigo-50 text-indigo-800 rounded-2xl shadow-lg p-5 h-48 flex flex-col justify-between transition hover:shadow-xl hover:scale-[1.02]">
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold">Revenue</h3>
+              </div>
+              <div class="flex items-center justify-center flex-1">
+                <div class="flex items-center space-x-3">
+                  <div class="bg-indigo-100 p-3 rounded-full shadow-sm">
+                    <i class="fas fa-dollar-sign text-2xl text-indigo-600"></i>
+                  </div>
+                  <div class="flex flex-col">
+                    <p class="text-2xl font-bold">₱<?= number_format($revenue, 2) ?></p>
+                    <span class="text-sm text-indigo-500">This Month</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <button id="search-submit" class="border border-teal-600 text-teal-600 px-4 py-1 rounded-md text-sm hover:bg-teal-50">Search</button>
-        </div>
 
-        <!-- Employee Grid -->
-        <div class="bg-white rounded-b-lg shadow-md flex flex-col" style="height: calc(100vh - 220px);">
-          <div class="overflow-auto flex-1">
-            <table class="w-full text-sm text-left text-gray-600 mx-auto">
-              <thead class="bg-white">
-                <tr>
-                  <th class="px-2 py-1 text-center">
-                    <input type="checkbox"
-                      class="h-4 w-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500 cursor-pointer">
-                  </th>
-                  <th class="p-2">Full Name</th>
-                  <th class="p-2">Contact No.</th>
-                  <th class="p-2">Address</th>
-                  <th class="p-2">Men's Set</th>
-                  <th class="p-2">Women's Set</th>
-                  <th class="p-2">Order Date</th>
-                  <th class="p-2">Status</th>
-                  <th class="p-2"></th>
-                </tr>
-              </thead>
-              <tbody id="employee-table" class="divide-y divide-gray-200">
-                <!-- <p class="text-gray-600">Loading employee productivity data...</p> -->
-                <?php foreach ($orders as $order): ?>
-                  <?php
-                  $status = $order['order_status'];
-                  $statusClass = match ($status) {
-                    'pending' => 'bg-orange-100 text-orange-800',
-                    'processed' => 'bg-blue-100 text-blue-800 ',
-                    'completed' => 'bg-green-100 text-green-800 ',
-                    'cancelled' => 'bg-red-100 text-red-800',
-                    default => 'bg-gray-500 text-white'
-                  };
-                  ?>
-                  <tr>
-                    <td class="px-2 py-1 text-center">
-                      <input type="checkbox"
-                        class="h-4 w-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500 cursor-pointer">
-                    </td>
-                    <td class="p-2">
-                      <!-- <img src="../assets/default_profile.png" alt="Employee" class="w-8 h-8 rounded-full border border-2"> -->
-                      <p><?php echo htmlspecialchars($order['customer_name']); ?></p>
-                    </td>
-                    <td class="p-2"><?php echo htmlspecialchars($order['phone_number']); ?></td>
-                    <td class="p-2 max-w-[150px] truncate cursor-pointer"
-                      title="<?php echo htmlspecialchars($order['address'] . ', ' . $order['barangay'] . ', ' . $order['city'] . ', ' . $order['province']); ?>">
-                      <?php echo htmlspecialchars($order['address'] . ', ' . $order['barangay'] . ', ' . $order['city'] . ', ' . $order['province']); ?>
-                    </td>
-                    <td class="p-2 text-center"><?php echo htmlspecialchars($order['men_set']); ?></td>
-                    <td class="p-2 text-center"><?php echo htmlspecialchars($order['women_set']); ?></td>
-                    <td class="p-2">
-                      <?php
-                      if (!empty($order['created_at']) && $order['created_at'] !== '0000-00-00 00:00:00') {
-                        echo (new DateTime($order['created_at']))->format('F d, Y');
-                      } else {
-                        echo 'N/A';
-                      }
-                      ?>
-                    </td>
-                    <td class="">
-                      <span class="text-xs font-semibold px-2.5 py-0.5 rounded <?php echo $statusClass; ?>">
-                        <?php echo htmlspecialchars(ucfirst($status)); ?>
-                      </span>
-                    </td>
-                    <td class="text-start">
-                      <!-- onclick=openEmployeeDashboard(${employee.id}, '${employee.first_name} ${employee.last_name}')" -->
-                      <button class="text-center text-teal-600 hover:text-teal-800">
-                        <i class="fa-solid fa-arrow-up-right-from-square text-xl"></i>
-                      </button>
-                    </td>
-                  </tr>
-                <?php endforeach; ?>
-              </tbody>
-            </table>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mt-6">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Sales Overview</h2>
+            <canvas id="sales-chart" class="w-full h-64"></canvas>
           </div>
-
-          <!-- Pagination -->
-          <div class="flex justify-between items-center p-4 bg-white border-t">
-            <!-- <button id="load-all" class="px-4 py-2 bg-teal-600 text-white rounded-md text-sm">Load All</button> -->
-            <p></p>
-            <div class="flex space-x-2">
-              <button id="prev-page" class="px-4 py-2 bg-gray-200 rounded-md text-sm">Previous</button>
-              <span id="page-info" class="text-sm self-center">Page 1</span>
-              <button id="next-page" class="px-4 py-2 bg-gray-200 rounded-md text-sm">Next</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Employee Productivity Dashboard Modal -->
-        <div id="employee-dashboard-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
-          <div class="bg-white p-6 rounded-lg w-full max-w-3xl">
-            <div class="flex justify-between items-center mb-4">
-              <h2 id="modal-title" class="text-lg font-bold">Employee Productivity Dashboard</h2>
-              <button onclick="closeEmployeeDashboardModal()" class="text-gray-500 hover:text-gray-700">
-                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div id="employee-dashboard-content">
-              <!-- Placeholder for employee productivity dashboard content -->
-              <p class="text-gray-600">Loading employee productivity data...</p>
-            </div>
-          </div>
-        </div>
+        <?php endif; ?>
       </div>
     </main>
   </div>
 
   <script>
-    // Mock data for demonstration
-    let employees = [{
-        id: 1,
-        code: "EMP001",
-        first_name: "John",
-        last_name: "Doe",
-        active: "Yes",
-        employee_image: "../assets/default_profile.png"
-      },
-      {
-        id: 100,
-        code: "EMP100",
-        first_name: "Emily",
-        last_name: "Myers",
-        active: "Yes",
-        employee_image: "../assets/default_profile.png"
-      }
-    ];
+    // Sales chart for dashboard
+    const labels = <?= json_encode($labels) ?>;
+    const revenues = <?= json_encode($revenues) ?>;
 
-    let currentPage = 1;
-    const defaultMaxRows = 100;
-    let maxRows = defaultMaxRows;
-    let isLoadAll = false;
-    let totalRecords = 1000; // Mock total records
-    const clientCode = "agile_jewelries";
-
-    // Sidebar Toggle for Mobile
-    const menuToggle = document.getElementById('menu-toggle');
-    const sidebar = document.getElementById('sidebar');
-    menuToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('-translate-x-full');
-    });
-
-    // User Menu Dropdown
-    const userMenuToggle = document.getElementById('user-menu-toggle');
-    const userMenu = document.getElementById('user-menu');
-    userMenuToggle.addEventListener('click', () => {
-      userMenu.classList.toggle('hidden');
-    });
-
-    // Close user menu when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!userMenu.contains(e.target) && !userMenuToggle.contains(e.target)) {
-        userMenu.classList.add('hidden');
-      }
-    });
-
-    // Navigation Toggle
-    function toggleNav(button) {
-      const ul = button.nextElementSibling;
-      const icon = button.querySelector('.expand-icon');
-      ul.classList.toggle('hidden');
-      icon.innerHTML = ul.classList.contains('hidden') ?
-        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />' :
-        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />';
-    }
-
-    // Change Password Modal
-    function showChangePasswordModal() {
-      document.getElementById('change-password-modal').classList.remove('hidden');
-      userMenu.classList.add('hidden');
-    }
-
-    function closeChangePasswordModal() {
-      document.getElementById('change-password-modal').classList.add('hidden');
-    }
-
-    // Logout
-    async function logout() {
-      try {
-        // Call logout.php with confirmation
-        const res = await fetch('logout.php?confirm=true', {
-          method: 'GET',
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest'
+    console.log(`labels: ${labels}, revenue: ${revenues}`);
+    const ctx = document.getElementById('sales-chart')?.getContext('2d');
+    if (ctx) {
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels.length ? labels : ["No Data"],
+          datasets: [{
+            label: 'Revenue (₱)',
+            data: revenues.length ? revenues : [0],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.2)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
           }
-        });
-
-        // Since PHP redirects, we manually force redirect in JS
-        if (res.ok) {
-          window.location.href = 'login.php';
         }
-      } catch (error) {
-        console.error(`${new Date()} Logout failed: ${error.message}`);
-      }
-    }
-
-    // Employee Grid Functions
-    function renderEmployeeTable(data) {
-      const tbody = document.getElementById('employee-table');
-      tbody.innerHTML = '';
-      data.forEach(employee => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td class="p-2">
-            <button onclick="openEmployeeDashboard(${employee.id}, '${employee.first_name} ${employee.last_name}')" class="text-teal-600 hover:text-teal-800">
-              <i class="fa-solid fa-arrow-up-right-from-square text-xl px-2"></i>
-            </button>
-          </td>
-          <td class="p-2">
-            <img src="${employee.employee_image}" alt="Employee" class="w-8 h-8 rounded-full border border-2">
-          </td>
-          <td class="p-2">${employee.code}</td>
-          <td class="p-2">${employee.first_name} ${employee.last_name}</td>
-          <td class="p-2">${employee.active}</td>
-        `;
-        tbody.appendChild(row);
       });
     }
-
-    async function loadData(page, searchQuery = '', showInactive = false, rows = maxRows) {
-      console.log('Loading data...', {
-        page,
-        searchQuery,
-        showInactive,
-        rows
-      });
-      renderEmployeeTable(employees);
-      document.getElementById('page-info').textContent = `Page ${page}`;
-    }
-
-    function openEmployeeDashboard(id, name) {
-      const modal = document.getElementById('employee-dashboard-modal');
-      const modalTitle = document.getElementById('modal-title');
-      const modalContent = document.getElementById('employee-dashboard-content');
-      modalTitle.textContent = `Employee Productivity Dashboard - ${name}`;
-      modalContent.innerHTML = `<p class="text-gray-600">Productivity data for employee ID ${id}</p>`;
-      modal.classList.remove('hidden');
-      window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard/${id}`);
-    }
-
-    function closeEmployeeDashboardModal() {
-      document.getElementById('employee-dashboard-modal').classList.add('hidden');
-      window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard`);
-    }
-
-    // Search Functionality
-    const searchInput = document.getElementById('search-input');
-    const clearSearch = document.getElementById('clear-search');
-    const searchButton = document.getElementById('search-button');
-    const searchSubmit = document.getElementById('search-submit');
-
-    searchInput.addEventListener('input', (e) => {
-      clearSearch.classList.toggle('hidden', e.target.value === '');
-      if (e.target.value === '') {
-        loadData(1);
-        window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard`);
-      }
-    });
-
-    searchInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        loadData(1, searchInput.value);
-        window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard?search=${encodeURIComponent(searchInput.value)}`);
-      }
-    });
-
-    clearSearch.addEventListener('click', () => {
-      searchInput.value = '';
-      clearSearch.classList.add('hidden');
-      loadData(1);
-      window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard`);
-    });
-
-    searchButton.addEventListener('click', () => {
-      loadData(1, searchInput.value);
-      window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard?search=${encodeURIComponent(searchInput.value)}`);
-    });
-
-    searchSubmit.addEventListener('click', () => {
-      loadData(1, searchInput.value);
-      window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard?search=${encodeURIComponent(searchInput.value)}`);
-    });
-
-    // Pagination
-    document.getElementById('prev-page').addEventListener('click', () => {
-      if (currentPage > 1) {
-        currentPage--;
-        loadData(currentPage, searchInput.value);
-      }
-    });
-
-    document.getElementById('next-page').addEventListener('click', () => {
-      if (currentPage < Math.ceil(totalRecords / maxRows)) {
-        currentPage++;
-        loadData(currentPage, searchInput.value);
-      }
-    });
-
-    document.getElementById('load-all').addEventListener('click', () => {
-      if (isLoadAll) {
-        maxRows = defaultMaxRows;
-        isLoadAll = false;
-        document.getElementById('load-all').textContent = 'Load All';
-      } else {
-        maxRows = totalRecords;
-        isLoadAll = true;
-        document.getElementById('load-all').textContent = 'Reset';
-      }
-      currentPage = 1;
-      loadData(currentPage, searchInput.value);
-      window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard`);
-    });
-
-    // Dynamic Work Area Height
-    const workArea = document.getElementById('work-area');
-
-    function resizeWorkArea() {
-      workArea.style.height = (window.innerHeight - 84) + 'px';
-    }
-    window.addEventListener('resize', resizeWorkArea);
-    resizeWorkArea();
-
-    // Initial Load
-    loadData(currentPage);
-
-    // Handle URL Parameters
-    window.addEventListener('popstate', () => {
-      const params = new URLSearchParams(window.location.search);
-      const search = params.get('search') || '';
-      const id = window.location.pathname.split('/').pop();
-      searchInput.value = search;
-      clearSearch.classList.toggle('hidden', search === '');
-      if (id && !isNaN(id)) {
-        const employee = employees.find(emp => emp.id === parseInt(id));
-        if (employee) {
-          openEmployeeDashboard(employee.id, `${employee.first_name} ${employee.last_name}`);
-        }
-      } else {
-        loadData(currentPage, search);
-      }
-    });
   </script>
 </body>
 

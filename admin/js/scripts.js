@@ -65,31 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Sales chart for dashboard
-    const ctx = document.getElementById('sales-chart')?.getContext('2d');
-    if (ctx) {
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Revenue',
-                    data: [5000, 6000, 5500, 7000, 6500, 7500],
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                    fill: true,
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-
     // Order modal handling
     const orderModal = document.getElementById('order-modal');
     const closeModalBtn = document.getElementById('close-modal');

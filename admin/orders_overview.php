@@ -22,7 +22,7 @@ try {
 
   if ($search !== '') {
     $searchParam = "%$search%";
-    $values = array_fill(0, 7, $searchParam); // Fixed: 7 parameters instead of 6
+    $values = array_fill(0, 7, $searchParam);
     $stmt->execute($values);
   } else {
     $stmt->execute();
@@ -50,7 +50,6 @@ try {
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@heroicons/react/24/outline/index.js"></script>
   <link rel="stylesheet" href="../assets/fontawesome/css/all.min.css">
-
 </head>
 
 <body class="bg-white font-sans antialiased h-screen overflow-hidden">
@@ -80,11 +79,11 @@ try {
             <input
               id="search-input"
               type="text"
-              placeholder="Search Employee Name or Code"
+              placeholder="Search by name, phone, address, or status"
+              value="<?= htmlspecialchars($search) ?>"
               class="w-full border border-gray-300 rounded-md p-2 pr-20 text-sm">
-
             <div class="absolute inset-y-0 right-0 flex items-center space-x-1 pr-2">
-              <button id="clear-search" class="hidden text-gray-500 hover:text-gray-700">
+              <button id="clear-search" class="<?= $search ? '' : 'hidden' ?> text-gray-500 hover:text-gray-700">
                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -97,6 +96,11 @@ try {
             </div>
           </div>
           <button id="search-submit" class="border border-teal-600 text-teal-600 px-4 py-1 rounded-md text-sm hover:bg-teal-50">Search</button>
+          <button id="change-status-btn"
+            class="ml-auto bg-teal-600 text-white px-4 py-1 rounded-md text-sm hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled>
+            Change Status
+          </button>
         </div>
 
         <!-- Employee Grid -->
@@ -109,6 +113,7 @@ try {
                     <input type="checkbox" id="select-all"
                       class="h-4 w-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500 cursor-pointer">
                   </th>
+                  <th class="p-2 hidden">ID</th>
                   <th class="p-2">Full Name</th>
                   <th class="p-2">Contact No.</th>
                   <th class="p-2">Address</th>
@@ -119,36 +124,36 @@ try {
                   <th class="p-2"></th>
                 </tr>
               </thead>
-              <!-- id="employee-table" -->
               <tbody class="divide-y divide-gray-200">
-                <!-- <p class="text-gray-600">Loading employee productivity data...</p> -->
                 <?php foreach ($orders as $order): ?>
                   <?php
                   $status = $order['order_status'];
                   $statusClass = match ($status) {
                     'pending' => 'bg-orange-100 text-orange-800',
-                    'processed' => 'bg-blue-100 text-blue-800 ',
-                    'completed' => 'bg-green-100 text-green-800 ',
+                    'processed' => 'bg-blue-100 text-blue-800',
+                    'completed' => 'bg-green-100 text-green-800',
                     'cancelled' => 'bg-red-100 text-red-800',
                     default => 'bg-gray-500 text-white'
                   };
                   ?>
                   <tr>
                     <td class="px-2 py-1 text-center">
-                      <input type="checkbox"
+                      <input type="checkbox" data-id="<?= htmlspecialchars($order['id']) ?>" <?php echo ($order['order_status'] === 'completed') ? 'disabled' : ''; ?>
                         class="row-checkbox h-4 w-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500 cursor-pointer">
                     </td>
+                    <td class="hidden">
+                      <p><?= htmlspecialchars($order['id']) ?></p>
+                    </td>
                     <td class="p-2">
-                      <!-- <img src="../assets/default_profile.png" alt="Employee" class="w-8 h-8 rounded-full border border-2"> -->
-                      <p><?php echo htmlspecialchars($order['customer_name']); ?></p>
+                      <p><?= htmlspecialchars($order['customer_name']); ?></p>
                     </td>
-                    <td class="p-2"><?php echo htmlspecialchars($order['phone_number']); ?></td>
+                    <td class="p-2"><?= htmlspecialchars($order['phone_number']); ?></td>
                     <td class="p-2 max-w-[150px] truncate cursor-pointer"
-                      title="<?php echo htmlspecialchars($order['address'] . ', ' . $order['barangay'] . ', ' . $order['city'] . ', ' . $order['province']); ?>">
-                      <?php echo htmlspecialchars($order['address'] . ', ' . $order['barangay'] . ', ' . $order['city'] . ', ' . $order['province']); ?>
+                      title="<?= htmlspecialchars($order['address'] . ', ' . $order['barangay'] . ', ' . $order['city'] . ', ' . $order['province']); ?>">
+                      <?= htmlspecialchars($order['address'] . ', ' . $order['barangay'] . ', ' . $order['city'] . ', ' . $order['province']); ?>
                     </td>
-                    <td class="p-2 text-center"><?php echo htmlspecialchars($order['men_set']); ?></td>
-                    <td class="p-2 text-center"><?php echo htmlspecialchars($order['women_set']); ?></td>
+                    <td class="p-2 text-center"><?= htmlspecialchars($order['men_set']); ?></td>
+                    <td class="p-2 text-center"><?= htmlspecialchars($order['women_set']); ?></td>
                     <td class="p-2">
                       <?php
                       if (!empty($order['created_at']) && $order['created_at'] !== '0000-00-00 00:00:00') {
@@ -160,7 +165,7 @@ try {
                     </td>
                     <td class="">
                       <span class="text-xs font-semibold px-2.5 py-0.5 rounded <?php echo $statusClass; ?>">
-                        <?php echo htmlspecialchars(ucfirst($status)); ?>
+                        <?= htmlspecialchars(ucfirst($status)); ?>
                       </span>
                     </td>
                     <td class="text-start">
@@ -168,7 +173,7 @@ try {
                         class="text-center text-teal-600 hover:text-teal-800"
                         onclick='openOrderDetails(<?= json_encode($order, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
                         <i class="fa-solid fa-arrow-up-right-from-square text-xl"></i>
-                        </button>
+                      </button>
                     </td>
                   </tr>
                 <?php endforeach; ?>
@@ -178,7 +183,6 @@ try {
 
           <!-- Pagination -->
           <div class="flex justify-between items-center p-4 bg-white border-t">
-            <!-- <button id="load-all" class="px-4 py-2 bg-teal-600 text-white rounded-md text-sm">Load All</button> -->
             <p></p>
             <div class="flex space-x-2">
               <button id="prev-page" class="px-4 py-2 bg-gray-200 rounded-md text-sm">Previous</button>
@@ -202,41 +206,240 @@ try {
             </div>
           </div>
         </div>
+
+        <!-- Change Status Modal -->
+        <div id="change-status-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div class="bg-white p-6 rounded-lg w-full max-w-sm">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-lg font-bold">Change Order Status</h2>
+              <button onclick="closeChangeStatusModal()" class="text-gray-500 hover:text-gray-700 cancel-btn">
+                <i class="fa-solid fa-xmark text-xl"></i>
+              </button>
+            </div>
+
+            <!-- Step 1: Select status -->
+            <div id="status-selection">
+              <label for="new-status" class="block text-sm text-gray-700 mb-2">Select new status:</label>
+              <select id="new-status" class="w-full border border-gray-300 rounded-md p-2 mb-4">
+                <option value="pending">Pending</option>
+                <option value="processed">Processed</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+
+            <!-- Step 2: Confirmation -->
+            <div id="status-confirmation" class="hidden">
+              <p class="text-sm text-gray-700 mb-4">
+                Are you sure you want to change the status of <span id="selected-count" class="font-bold"></span> order(s) to
+                <span id="selected-status" class="font-bold text-teal-600"></span>?
+              </p>
+            </div>
+
+            <!-- Step 3: Loading State -->
+            <div id="loading-state" class="hidden">
+              <div class="flex items-center justify-center mb-4">
+                <svg class="animate-spin h-5 w-5 text-teal-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p class="text-sm text-teal-700">Updating...</p>
+              </div>
+            </div>
+
+            <!-- Step 4: Result -->
+            <div id="result-state" class="hidden">
+              <p id="result-message" class="text-sm mb-4"></p>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex justify-end space-x-2">
+              <button onclick="closeChangeStatusModal()" class="px-4 py-2 border rounded-md cancel-btn">Cancel</button>
+              <button id="confirm-step-btn" class="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 confirm-btn">
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   </div>
 
   <script>
-    // Mock data for demonstration
-    let employees = [{
-        id: 1,
-        code: "EMP001",
-        first_name: "John",
-        last_name: "Doe",
-        active: "Yes",
-        employee_image: "../assets/default_profile.png"
-      },
-      {
-        id: 100,
-        code: "EMP100",
-        first_name: "Emily",
-        last_name: "Myers",
-        active: "Yes",
-        employee_image: "../assets/default_profile.png"
-      }
-    ];
+    const endpoint = "orders_overview.php";
+    let confirmStep = false;
+    let resultStep = false;
 
-    let currentPage = 1;
-    const defaultMaxRows = 100;
-    let maxRows = defaultMaxRows;
-    let isLoadAll = false;
-    let totalRecords = 1000; // Mock total records
-    const clientCode = "agile_jewelries";
+    const changeStatusBtn = document.getElementById("change-status-btn");
+    const confirmStepBtn = document.getElementById("confirm-step-btn");
+    const searchInput = document.getElementById("search-input");
+    const searchButton = document.getElementById("search-button");
+    const searchSubmit = document.getElementById("search-submit");
+    const clearSearch = document.getElementById("clear-search");
+
+    // Search functionality
+    function performSearch() {
+      const query = searchInput.value.trim();
+      console.log("Performing search with query:", query);
+      window.location.href = `${endpoint}${query ? `?search=${encodeURIComponent(query)}` : ''}`;
+    }
+
+    // Show/hide clear button based on input
+    searchInput.addEventListener("input", () => {
+      console.log("Search input changed, value:", searchInput.value);
+      clearSearch.classList.toggle("hidden", !searchInput.value);
+    });
+
+    // Search button click
+    searchButton.addEventListener("click", () => {
+      console.log("Search button clicked");
+      performSearch();
+    });
+
+    // Search submit button click
+    searchSubmit.addEventListener("click", () => {
+      console.log("Search submit button clicked");
+      performSearch();
+    });
+
+    // Enter key in search input
+    searchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        console.log("Enter key pressed in search input");
+        performSearch();
+      }
+    });
+
+    // Clear search button
+    clearSearch.addEventListener("click", () => {
+      console.log("Clear search button clicked");
+      searchInput.value = "";
+      clearSearch.classList.add("hidden");
+      window.location.href = endpoint;
+    });
+
+    function closeChangeStatusModal() {
+      console.log("Closing change status modal");
+      document.getElementById("change-status-modal").classList.add("hidden");
+      document.getElementById("status-selection").classList.remove("hidden");
+      document.getElementById("status-confirmation").classList.add("hidden");
+      document.getElementById("loading-state").classList.add("hidden");
+      document.getElementById("result-state").classList.add("hidden");
+      confirmStepBtn.textContent = "Confirm";
+      confirmStep = false;
+      resultStep = false;
+      document.querySelectorAll(".cancel-btn, .confirm-btn").forEach(btn => btn.disabled = false);
+    }
+
+    // Open modal
+    changeStatusBtn.addEventListener("click", () => {
+      console.log("Opening change status modal");
+      document.getElementById("change-status-modal").classList.remove("hidden");
+    });
+
+    // Confirm button logic
+    confirmStepBtn.addEventListener("click", () => {
+      console.log("Confirm button clicked, confirmStep:", confirmStep, "resultStep:", resultStep);
+      const newStatus = document.getElementById("new-status").value;
+      const checkedBoxes = document.querySelectorAll(".row-checkbox:checked");
+      const ids = Array.from(checkedBoxes).map(cb => cb.dataset.id);
+
+      if (ids.length === 0 && !resultStep) {
+        console.log("No orders selected");
+        alert("No orders selected.");
+        return;
+      }
+
+      if (!confirmStep && !resultStep) {
+        // Step 1: Show confirmation text
+        console.log("Showing confirmation step, selected orders:", ids.length, "status:", newStatus);
+        document.getElementById("selected-count").textContent = ids.length;
+        document.getElementById("selected-status").textContent = newStatus;
+        document.getElementById("status-selection").classList.add("hidden");
+        document.getElementById("status-confirmation").classList.remove("hidden");
+        confirmStepBtn.textContent = "Apply";
+        confirmStep = true;
+        return;
+      }
+
+      if (confirmStep && !resultStep) {
+        // Step 2: Show loading state
+        console.log("Showing loading state, sending AJAX request for IDs:", ids, "status:", newStatus);
+        document.getElementById("status-confirmation").classList.add("hidden");
+        document.getElementById("loading-state").classList.remove("hidden");
+        document.querySelectorAll(".cancel-btn, .confirm-btn").forEach(btn => btn.disabled = true);
+
+        // Step 3: Apply change via AJAX
+        fetch("update_order_status.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              order_ids: ids,
+              status: newStatus
+            })
+          })
+          .then(res => {
+            console.log("AJAX response received, status:", res.status);
+            return res.json();
+          })
+          .then(data => {
+            console.log("AJAX data:", data);
+            document.getElementById("loading-state").classList.add("hidden");
+            document.getElementById("result-state").classList.remove("hidden");
+            confirmStepBtn.textContent = "Close";
+            resultStep = true;
+
+            if (data.success) {
+              document.getElementById("result-message").className = "text-sm text-green-700 mb-4";
+              document.getElementById("result-message").textContent = `Successfully updated ${data.updated_count} order(s) to ${data.new_status}.`;
+              console.log("Success, auto-closing in 3 seconds");
+              setTimeout(() => {
+                console.log("Auto-closing modal and reloading page");
+                closeChangeStatusModal();
+                location.reload();
+              }, 3000);
+            } else {
+              document.getElementById("result-message").className = "text-sm text-red-700 mb-4";
+              document.getElementById("result-message").textContent = `Failed to update status: ${data.error || "Unknown error"}`;
+              console.log("Error, auto-closing in 5 seconds");
+              setTimeout(() => {
+                console.log("Auto-closing modal");
+                closeChangeStatusModal();
+              }, 5000);
+            }
+          })
+          .catch(err => {
+            console.error("AJAX error:", err);
+            document.getElementById("loading-state").classList.add("hidden");
+            document.getElementById("result-state").classList.remove("hidden");
+            document.getElementById("result-message").className = "text-sm text-red-700 mb-4";
+            document.getElementById("result-message").textContent = `Error: ${err.message}`;
+            confirmStepBtn.textContent = "Close";
+            resultStep = true;
+            console.log("Error, auto-closing in 5 seconds");
+            setTimeout(() => {
+              console.log("Auto-closing modal");
+              closeChangeStatusModal();
+            }, 5000);
+          });
+      } else if (resultStep) {
+        // Step 4: Close modal and reload page on success
+        console.log("Result step, closing modal");
+        if (document.getElementById("result-message").className.includes("text-green-700")) {
+          console.log("Success, reloading page");
+          location.reload();
+        }
+        closeChangeStatusModal();
+      }
+    });
 
     // Sidebar Toggle for Mobile
     const menuToggle = document.getElementById('menu-toggle');
     const sidebar = document.getElementById('sidebar');
     menuToggle.addEventListener('click', () => {
+      console.log("Toggling sidebar");
       sidebar.classList.toggle('-translate-x-full');
     });
 
@@ -244,18 +447,21 @@ try {
     const userMenuToggle = document.getElementById('user-menu-toggle');
     const userMenu = document.getElementById('user-menu');
     userMenuToggle.addEventListener('click', () => {
+      console.log("Toggling user menu");
       userMenu.classList.toggle('hidden');
     });
 
     // Close user menu when clicking outside
     document.addEventListener('click', (e) => {
       if (!userMenu.contains(e.target) && !userMenuToggle.contains(e.target)) {
+        console.log("Closing user menu");
         userMenu.classList.add('hidden');
       }
     });
 
     // Navigation Toggle
     function toggleNav(button) {
+      console.log("Toggling navigation");
       const ul = button.nextElementSibling;
       const icon = button.querySelector('.expand-icon');
       ul.classList.toggle('hidden');
@@ -265,50 +471,60 @@ try {
     }
 
     // Get header checkbox
-
     const selectAll = document.getElementById('select-all');
 
     if (selectAll) {
       // Toggle all when header is clicked
       selectAll.addEventListener('change', function() {
-        document.querySelectorAll('.row-checkbox').forEach(cb => {
+        console.log("Select all changed:", this.checked);
+        document.querySelectorAll('.row-checkbox:not(:disabled)').forEach(cb => {
           cb.checked = this.checked;
         });
+        updateChangeStatusBtn();
       });
 
       // Use event delegation for row checkboxes
       document.addEventListener('change', function(e) {
         if (e.target.classList.contains('row-checkbox')) {
-          const all = document.querySelectorAll('.row-checkbox');
+          console.log("Row checkbox changed");
+          const all = document.querySelectorAll('.row-checkbox:not(:disabled)');
           const checked = document.querySelectorAll('.row-checkbox:checked');
           selectAll.checked = all.length === checked.length;
+          updateChangeStatusBtn();
         }
       });
     }
 
+    function updateChangeStatusBtn() {
+      const checked = document.querySelectorAll('.row-checkbox:checked').length;
+      console.log("Updating change status button, checked count:", checked);
+      changeStatusBtn.disabled = checked === 0;
+    }
+
     // Change Password Modal
     function showChangePasswordModal() {
+      console.log("Showing change password modal");
       document.getElementById('change-password-modal').classList.remove('hidden');
       userMenu.classList.add('hidden');
     }
 
     function closeChangePasswordModal() {
+      console.log("Closing change password modal");
       document.getElementById('change-password-modal').classList.add('hidden');
     }
 
     // Logout
     async function logout() {
+      console.log("Initiating logout");
       try {
-        // Call logout.php with confirmation
         const res = await fetch('logout.php?confirm=true', {
           method: 'GET',
           headers: {
             'X-Requested-With': 'XMLHttpRequest'
           }
         });
-
-        // Since PHP redirects, we manually force redirect in JS
         if (res.ok) {
+          console.log("Logout successful, redirecting to login.php");
           window.location.href = 'login.php';
         }
       } catch (error) {
@@ -316,159 +532,8 @@ try {
       }
     }
 
-    // function renderEmployeeTable(data) {
-    //   const tbody = document.getElementById('employee-table');
-    //   tbody.innerHTML = '';
-    //   data.forEach(item => {
-    //     const row = document.createElement('tr');
-    //     row.innerHTML = `
-    //       <td class="px-2 py-1 text-center">
-    //         <input type="checkbox"
-    //           class="row-checkbox h-4 w-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500 cursor-pointer">
-    //       </td>
-    //       <td class="p-2">${item.first_name} ${item.last_name}</td>
-    //       <td class="p-2">—</td>
-    //       <td class="p-2">—</td>
-    //       <td class="p-2 text-center">—</td>
-    //       <td class="p-2 text-center">—</td>
-    //       <td class="p-2">—</td>
-    //       <td class="">
-    //         <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-gray-100 text-gray-800">—</span>
-    //       </td>
-    //       <td class="text-start">
-    //         <button class="text-center text-teal-600 hover:text-teal-800">
-    //           <i class="fa-solid fa-arrow-up-right-from-square text-xl"></i>
-    //         </button>
-    //       </td>
-    //     `;
-    //     tbody.appendChild(row);
-    //   });
-    // }
-
-    // async function loadData(page, searchQuery = '', showInactive = false, rows = maxRows) {
-    //   console.log('Loading data...', {
-    //     page,
-    //     searchQuery,
-    //     showInactive,
-    //     rows
-    //   });
-    //   renderEmployeeTable(employees);
-    //   document.getElementById('page-info').textContent = `Page ${page}`;
-    // }
-
-    // function openEmployeeDashboard(id, name) {
-    //   const modal = document.getElementById('employee-dashboard-modal');
-    //   const modalTitle = document.getElementById('modal-title');
-    //   const modalContent = document.getElementById('employee-dashboard-content');
-    //   modalTitle.textContent = `Employee Productivity Dashboard - ${name}`;
-    //   modalContent.innerHTML = `<p class="text-gray-600">Productivity data for employee ID ${id}</p>`;
-    //   modal.classList.remove('hidden');
-    //   window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard/${id}`);
-    // }
-
-    // function closeEmployeeDashboardModal() {
-    //   document.getElementById('employee-dashboard-modal').classList.add('hidden');
-    //   window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard`);
-    // }
-
-    // Search Functionality
-    // const searchInput = document.getElementById('search-input');
-    // const clearSearch = document.getElementById('clear-search');
-    // const searchButton = document.getElementById('search-button');
-    // const searchSubmit = document.getElementById('search-submit');
-
-    // searchInput.addEventListener('input', (e) => {
-    //   clearSearch.classList.toggle('hidden', e.target.value === '');
-    //   if (e.target.value === '') {
-    //     loadData(1);
-    //     window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard`);
-    //   }
-    // });
-
-    // searchInput.addEventListener('keypress', (e) => {
-    //   if (e.key === 'Enter') {
-    //     loadData(1, searchInput.value);
-    //     window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard?search=${encodeURIComponent(searchInput.value)}`);
-    //   }
-    // });
-
-    // clearSearch.addEventListener('click', () => {
-    //   searchInput.value = '';
-    //   clearSearch.classList.add('hidden');
-    //   loadData(1);
-    //   window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard`);
-    // });
-
-    // searchButton.addEventListener('click', () => {
-    //   loadData(1, searchInput.value);
-    //   window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard?search=${encodeURIComponent(searchInput.value)}`);
-    // });
-
-    // searchSubmit.addEventListener('click', () => {
-    //   loadData(1, searchInput.value);
-    //   window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard?search=${encodeURIComponent(searchInput.value)}`);
-    // });
-
-    // // Pagination
-    // document.getElementById('prev-page').addEventListener('click', () => {
-    //   if (currentPage > 1) {
-    //     currentPage--;
-    //     loadData(currentPage, searchInput.value);
-    //   }
-    // });
-
-    // document.getElementById('next-page').addEventListener('click', () => {
-    //   if (currentPage < Math.ceil(totalRecords / maxRows)) {
-    //     currentPage++;
-    //     loadData(currentPage, searchInput.value);
-    //   }
-    // });
-
-    // document.getElementById('load-all').addEventListener('click', () => {
-    //   if (isLoadAll) {
-    //     maxRows = defaultMaxRows;
-    //     isLoadAll = false;
-    //     document.getElementById('load-all').textContent = 'Load All';
-    //   } else {
-    //     maxRows = totalRecords;
-    //     isLoadAll = true;
-    //     document.getElementById('load-all').textContent = 'Reset';
-    //   }
-    //   currentPage = 1;
-    //   loadData(currentPage, searchInput.value);
-    //   window.history.pushState({}, '', `/${clientCode}/app/reports/employee_productivity_dashboard`);
-    // });
-
-    // Dynamic Work Area Height
-    const workArea = document.getElementById('work-area');
-
-    function resizeWorkArea() {
-      workArea.style.height = (window.innerHeight - 84) + 'px';
-    }
-    window.addEventListener('resize', resizeWorkArea);
-    resizeWorkArea();
-
-    // Initial Load
-    // loadData(currentPage);
-
-    // Handle URL Parameters
-    // window.addEventListener('popstate', () => {
-    //   const params = new URLSearchParams(window.location.search);
-    //   const search = params.get('search') || '';
-    //   const id = window.location.pathname.split('/').pop();
-    //   searchInput.value = search;
-    //   clearSearch.classList.toggle('hidden', search === '');
-    //   if (id && !isNaN(id)) {
-    //     const employee = employees.find(emp => emp.id === parseInt(id));
-    //     if (employee) {
-    //       openEmployeeDashboard(employee.id, `${employee.first_name} ${employee.last_name}`);
-    //     }
-    //   } else {
-    //     loadData(currentPage, search);
-    //   }
-    // });
-
     function openOrderDetails(order) {
+      console.log("Opening order details for order ID:", order.id);
       const modal = document.getElementById('order-details-modal');
       const modalTitle = document.getElementById('order-modal-title');
       const modalContent = document.getElementById('order-modal-content');
@@ -482,15 +547,23 @@ try {
         <p><strong>Women Set:</strong> ${order.women_set}</p>
         <p><strong>Status:</strong> ${order.order_status}</p>
       `;
-
       modal.classList.remove('hidden');
-      // window.history.pushState({}, '', `/app/orders/${order.id}`);
     }
 
     function closeOrderDetailsModal() {
+      console.log("Closing order details modal");
       document.getElementById('order-details-modal').classList.add('hidden');
-      // window.history.pushState({}, '', `/app/orders`);
     }
+
+    // Dynamic Work Area Height
+    const workArea = document.getElementById('work-area');
+
+    function resizeWorkArea() {
+      console.log("Resizing work area");
+      workArea.style.height = (window.innerHeight - 84) + 'px';
+    }
+    window.addEventListener('resize', resizeWorkArea);
+    resizeWorkArea();
   </script>
 </body>
 

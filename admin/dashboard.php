@@ -7,12 +7,12 @@ checkAuth();
 // Fetch dynamic dashboard metric (total_orders)
 try {
     $stmt = $pdo->query("
-SELECT 
-    COUNT(*) AS total_orders,
-    SUM(CASE WHEN men_set = 1 OR women_set = 1 THEN 1 ELSE 0 END) AS sets_count,
-    SUM(CASE WHEN men_set = 1 OR women_set = 1 THEN 1 ELSE 0 END) * 999 AS total_amount
-FROM orders
-");
+        SELECT 
+            COUNT(*) AS total_orders,
+            SUM(CASE WHEN men_set = 1 OR women_set = 1 THEN 1 ELSE 0 END) AS sets_count,
+            SUM(CASE WHEN men_set = 1 OR women_set = 1 THEN 1 ELSE 0 END) * 999 AS total_amount
+        FROM orders
+    ");
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     $total_orders = $result['total_orders'];

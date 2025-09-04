@@ -5,12 +5,45 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await fetch("https://psgc.cloud/api/regions");
             const regions = await res.json();
             console.log(`regions : `, JSON.stringify(regions, null, 2));
-        } catch (error) {
+        } 
+        catch (error) {
             console.error("GeoJS API fetch failed:", error);
         }
     }
 
-    fetchRegions();
+    async function fetchCitiesMunicipalities(code) {
+      try {
+        const res = await fetch(`https://psgc.cloud/api/v2/regions/${code}/cities-municipalities`);
+        const citiesMunicipalities = await res.json();
+        console.log(`cities: `, JSON.stringify(citiesMunicipalities, null, 2));
+      } 
+      catch (error) {
+        console.error(`${new Date()} > fetchCitiesMunicipalities failed: `, error);
+      }
+    }
+
+    async function fetchBarangays(code) {
+      try {
+        const res = await fetch(`https://psgc.cloud/api/v2/cities-municipalities/${code}/barangays`);
+        const barangays = await res.json();
+        console.log(`barangays: `, JSON.stringify(barangays, null, 2));
+      }
+      catch (error) {
+        console.error(`${new Date()} > fetchBarangays failed: `, error);
+      }
+    }
+
+    async function fetchPSGC() {
+      await Promise.all([
+        fetchRegions(),
+        fetchCitiesMunicipalities(1300000000),
+        fetchBarangays(1381300000)
+      ]);
+
+      console.log("All PSCG data fetched");
+    }
+
+    fetchPSGC();
   // ===============================
   // Checkout Form Submit
   // ===============================
@@ -99,19 +132,11 @@ document.addEventListener("DOMContentLoaded", () => {
             "Order Submitted",
             data.message,
             `
-                        <p><strong>Name:</strong> ${
-                          data.order.customer_name
-                        }</p>
-                        <p><strong>Phone:</strong> ${
-                          data.order.phone_number
-                        }</p>
-                        <p><strong>Address:</strong> ${data.order.address}, ${
-              data.order.barangay
-            }, ${data.order.city}, ${data.order.province}</p>
-                        <p><strong>Products:</strong> ${
-                          data.order.men_set ? "Men's Set" : ""
-                        } ${data.order.women_set ? "Women's Set" : ""}</p>
-                    `
+              <p><strong>Name:</strong> ${data.order.customer_name}</p>
+              <p><strong>Phone:</strong> ${data.order.phone_number}</p>
+              <p><strong>Address:</strong> ${data.order.address}, ${data.order.barangay}, ${data.order.city}, ${data.order.province}</p>
+              <p><strong>Products:</strong> ${data.order.men_set ? "Men's Set" : ""} ${data.order.women_set ? "Women's Set" : ""}</p>
+            `
           );
           this.reset();
         } 
