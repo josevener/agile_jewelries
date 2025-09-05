@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!phoneNumber || !/^\+?[0-9]{10,11}$/.test(phoneNumber)) {
         errors.push("Please enter a valid phone number.");
       }
-      if (!address) errors.push("Please enter your address.");
+      if (!address) errors.push("Please enter your address (House No., Street, Subdivision).");
       if (!province) errors.push("Please select a province.");
       if (!city) errors.push("Please select a city.");
       if (!barangay) errors.push("Please select a barangay.");

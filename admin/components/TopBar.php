@@ -1,5 +1,5 @@
-<?php 
- include_once "../config/database.php";
+<?php
+include_once "../config/database.php";
 ?>
 
 <div class="container mx-auto flex items-center justify-between px-4">
@@ -72,19 +72,13 @@
         </div>
     </div>
 </div>
-<!-- Loading Modal -->
-<div id="loading-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white p-6 rounded-lg flex items-center justify-center">
-        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-teal-600"></div>
-        <span class="ml-3 text-gray-700">Processing...</span>
-    </div>
-</div>
+
+<?php include_once('LoadingModal.php') ?>
 
 <script>
     (function() {
         // Message Modal Logic
         function showModal(title, message) {
-            console.log("showModal called with title:", title, "message:", message);
             const modal = document.getElementById("message-modal");
             const modalTitle = document.getElementById("message-modal-title");
             const modalContent = document.getElementById("message-modal-content");
@@ -98,7 +92,6 @@
         }
 
         function closeModal() {
-            console.log("closeModal called");
             const modal = document.getElementById("message-modal");
             if (modal) {
                 modal.classList.add("hidden");
@@ -119,7 +112,6 @@
 
         // Loading Modal Logic
         function showLoadingModal() {
-            console.log("showLoadingModal called");
             const loadingModal = document.getElementById("loading-modal");
             if (loadingModal) {
                 loadingModal.classList.remove("hidden");
@@ -127,7 +119,6 @@
         }
 
         function hideLoadingModal() {
-            console.log("hideLoadingModal called");
             const loadingModal = document.getElementById("loading-modal");
             if (loadingModal) {
                 loadingModal.classList.add("hidden");
@@ -146,7 +137,6 @@
         const cancelPasswordBtn = changePasswordModal?.querySelector("button.bg-gray-200");
 
         window.showChangePasswordModal = function() {
-            console.log("showChangePasswordModal called");
             if (changePasswordModal && userMenu) {
                 changePasswordModal.classList.remove("hidden");
                 userMenu.classList.add("hidden");
@@ -155,7 +145,6 @@
         };
 
         window.closeChangePasswordModal = function() {
-            console.log("closeChangePasswordModal called");
             if (changePasswordModal && changePasswordForm) {
                 changePasswordModal.classList.add("hidden");
                 changePasswordForm.querySelectorAll("input").forEach(input => {
@@ -186,7 +175,6 @@
 
         if (savePasswordBtn && changePasswordForm && currentPasswordInput && newPasswordInput && confirmPasswordInput) {
             savePasswordBtn.addEventListener("click", async () => {
-                console.log("Save password button clicked");
                 const currentPassword = currentPasswordInput.value.trim();
                 const newPassword = newPasswordInput.value.trim();
                 const confirmPassword = confirmPasswordInput.value.trim();
@@ -195,28 +183,24 @@
                 if (!currentPassword) {
                     errors.push("Current password is required.");
                     currentPasswordInput.classList.add("border-red-500");
-                } 
-                else {
+                } else {
                     currentPasswordInput.classList.remove("border-red-500");
                 }
 
                 if (!newPassword) {
                     errors.push("New password is required.");
                     newPasswordInput.classList.add("border-red-500");
-                } 
-                else if (newPassword.length < 8) {
+                } else if (newPassword.length < 8) {
                     errors.push("New password must be at least 8 characters long.");
                     newPasswordInput.classList.add("border-red-500");
-                } 
-                else {
+                } else {
                     newPasswordInput.classList.remove("border-red-500");
                 }
 
                 if (newPassword !== confirmPassword) {
                     errors.push("New password and confirmation do not match.");
                     confirmPasswordInput.classList.add("border-red-500");
-                } 
-                else {
+                } else {
                     confirmPasswordInput.classList.remove("border-red-500");
                 }
 
@@ -267,7 +251,7 @@
                     console.error("Change password failed:", err);
                     showModal(
                         "Network Error",
-                        "Could not connect to the server. Please try again later." .err
+                        "Could not connect to the server. Please try again later.".err
                     );
                 } 
                 finally {
@@ -287,6 +271,13 @@
                 confirmPasswordInput: !!confirmPasswordInput
             });
         }
+
+        // Sidebar Toggle for Mobile
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
 
         // Logout Function
         window.logout = function() {

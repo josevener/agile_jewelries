@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="css/styles.css">
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="stylesheet" href="assets/fontawesome/css/all.min.css">
 </head>
 
 <body class="bg-white text-gray-900">
@@ -152,7 +154,7 @@
             <form id="checkoutForm" class="space-y-3">
                 <input type="text" name="customer_name" placeholder="Full Name" class="w-full border px-3 py-2 rounded border border-gray-800 border-2" required>
                 <input type="text" name="phone_number" placeholder="Phone Number" class="w-full border px-3 py-2 rounded border border-gray-800 border-2" required>
-                <input type="text" name="address" placeholder="Address" class="w-full border px-3 py-2 rounded border border-gray-800 border-2" required>
+                <input type="text" name="address" placeholder="House No., Street, Subdivision" class="w-full border px-3 py-2 rounded border border-gray-800 border-2" required>
                 <div class="flex space-x-2">
                     <select name="province" id="province-select" class="w-1/3 border text-xs sm:text-sm px-3 py-2 rounded border-gray-800 border-2 cursor-pointer" required>
                         <option value="" disabled selected>Select Province</option>
@@ -265,14 +267,14 @@
             </div>
         </section>
 
-        <section class="bg-gray-50 py-6">
+        <section class="bg-gray-50 py-6 mt-2 rounded-lg">
             <div class="flex flex-col max-w-lg mx-auto p-4 space-y-6">
                 <!-- Top: image + main commitment -->
                 <div class="flex flex-col gap-4">
                     <img
                         src="assets/sec/gov.png"
                         alt="Agile Jewelries quality badge"
-                        class="w-full h-48 object-contain rounded-md shadow-sm bg-white p-4"
+                        class="w-full h-48 object-contain rounded-md shadow-sm bg-white"
                         loading="lazy" />
                     <div class="bg-white rounded-xl p-6 shadow-sm ring-1 ring-gray-100 text-center">
                         <h2 class="text-xl font-semibold text-gray-800 mb-2">Our Commitment</h2>
@@ -284,49 +286,49 @@
 
                 <!-- Feature cards (stacked like in image) -->
                 <div class="flex flex-col gap-4">
-                    <div class="flex items-center gap-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-semibold rounded-lg px-6 py-4 shadow-md">
-                        <i class="fa-solid fa-truck-fast text-2xl" aria-hidden="true"></i>
+                    <div class="flex items-center text-3xl gap-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-semibold rounded-l-full px-6 py-8 shadow-md">
+                        <i class="fa-solid fa-truck-fast text-6xl" aria-hidden="true"></i>
                         <span class="uppercase">Nationwide Shipping</span>
                     </div>
 
-                    <div class="flex items-center gap-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-semibold rounded-lg px-6 py-4 shadow-md">
-                        <i class="fa-solid fa-arrows-spin text-2xl" aria-hidden="true"></i>
+                    <div class="flex items-center text-3xl gap-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-semibold rounded-r-full px-6 py-8 shadow-md">
+                        <i class="fa-solid fa-arrows-spin text-6xl" aria-hidden="true"></i>
                         <span class="uppercase">30 Days Free Exchange</span>
                     </div>
 
-                    <div class="flex items-center gap-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-semibold rounded-lg px-6 py-4 shadow-md">
-                        <i class="fa-solid fa-boxes-packing text-2xl" aria-hidden="true"></i>
+                    <div class="flex items-center text-3xl gap-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-semibold rounded-l-full px-6 py-8 shadow-md">
+                        <i class="fa-solid fa-boxes-packing text-6xl" aria-hidden="true"></i>
                         <span class="uppercase">Cash on Delivery</span>
                     </div>
 
-                    <div class="flex items-center gap-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-semibold rounded-lg px-6 py-4 shadow-md">
-                        <i class="fa-solid fa-headset text-2xl" aria-hidden="true"></i>
+                    <div class="flex items-center text-3xl gap-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-semibold rounded-r-full px-6 py-8 shadow-md">
+                        <i class="fa-solid fa-headset text-6xl" aria-hidden="true"></i>
                         <span class="uppercase">Customer Support</span>
                     </div>
                 </div>
 
                 <!-- About Us -->
                 <aside>
-                    <div class="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl p-6 shadow-sm ring-1 ring-gray-100 text-center">
-                        <h3 class="text-lg font-semibold text-white">About Us</h3>
+                    <div class="bg-white rounded-xl p-6 shadow-sm ring-1 ring-gray-100 text-center">
+                        <h3 class="text-lg font-semibold text-gray-800">About Us</h3>
 
-                        <ul class="mt-4 space-y-3 text-sm text-white text-left">
+                        <ul class="mt-4 space-y-3 text-sm text-left">
                             <li>
-                                <p class="text-white font-medium">Website</p>
-                                <a href="https://agilejewelries.com" class="text-indigo-600 hover:underline">agilejewelries.com</a>
+                                <p class="text-gray-600 font-medium">Website</p>
+                                <a href="https://agilejewelries.com" target="_blank" class="text-indigo-600 hover:underline">agilejewelries.com</a>
                             </li>
                             <li>
-                                <p class="text-white font-medium">Email</p>
+                                <p class="text-gray-600 font-medium">Email</p>
                                 <a href="mailto:agilejewelries@gmail.com" class="text-indigo-600 hover:underline">agilejewelries@gmail.com</a>
                             </li>
                             <li>
-                                <p class="text-white font-medium">Hotline</p>
+                                <p class="text-gray-600 font-medium">Hotline</p>
                                 <a href="tel:+639123456789" class="text-indigo-600 hover:underline">0912-345-6789</a>
                             </li>
                         </ul>
 
-                        <h3 class="mt-6 text-lg font-semibold text-white">Customer Care</h4>
-                        <p class="text-xs text-white mt-2">Mon–Fri, 9AM–6PM</p>
+                        <h3 class="mt-6 text-lg font-semibold text-gray-800">Customer Care</h4>
+                            <p class="text-xs text-gray-600 mt-2">Mon–Fri, 9AM–6PM</p>
                     </div>
                 </aside>
             </div>

@@ -25,37 +25,49 @@ try {
 
   // Generate all months for the current year
   $months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
   ];
   $current_month = date('n');
   $current_year = date('Y');
 
   // Monthly sales query with data up to current month
   $salesStmt = $pdo->prepare("
-      WITH all_months AS (
-          SELECT n AS month_num, DATE_FORMAT(STR_TO_DATE(n, '%m'), '%b') AS month_name
-          FROM (
-              SELECT a.N + b.N * 10 + 1 AS n
-              FROM 
-                  (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION 
-                    SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
-                  (SELECT 0 AS N UNION SELECT 1) b
-              ORDER BY n
-          ) months
-          WHERE n <= ?
-      )
-      SELECT 
-          all_months.month_name AS month,
-          COALESCE(SUM(CASE WHEN o.order_status = 'completed' 
-                        THEN (CASE WHEN o.men_set = 1 OR o.women_set = 1 THEN amount ELSE 0 END) 
-                        ELSE 0 END), 0) AS monthly_revenue
-      FROM all_months
-      LEFT JOIN orders o
-          ON MONTH(o.created_at) = all_months.month_num
-          AND YEAR(o.created_at) = ?
-      GROUP BY all_months.month_num, all_months.month_name
-      ORDER BY all_months.month_num
+    SELECT 
+        m.month_name AS month,
+        COALESCE(SUM(
+            CASE 
+                WHEN o.order_status = 'completed' 
+                THEN (CASE WHEN o.men_set = 1 OR o.women_set = 1 THEN o.amount ELSE 0 END) 
+                ELSE 0 
+            END
+        ), 0) AS monthly_revenue
+    FROM (
+        SELECT n AS month_num, DATE_FORMAT(STR_TO_DATE(n, '%m'), '%b') AS month_name
+        FROM (
+            SELECT a.N + b.N * 10 + 1 AS n
+            FROM 
+                (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 
+                UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
+                (SELECT 0 AS N UNION SELECT 1) b
+        ) months
+        WHERE n <= ?
+    ) m
+    LEFT JOIN orders o
+        ON MONTH(o.created_at) = m.month_num
+      AND YEAR(o.created_at) = ?
+    GROUP BY m.month_num, m.month_name
+    ORDER BY m.month_num;
   ");
   $salesStmt->execute([$current_month, $current_year]);
 
@@ -67,10 +79,10 @@ try {
 
   // Fill revenues for months up to current month
   foreach ($salesData as $data) {
-      $month_index = array_search($data['month'], $months);
-      if ($month_index !== false && $month_index < $current_month) {
-          $revenues[$month_index] = $data['monthly_revenue'];
-      }
+    $month_index = array_search($data['month'], $months);
+    if ($month_index !== false && $month_index < $current_month) {
+      $revenues[$month_index] = $data['monthly_revenue'];
+    }
   }
 } catch (PDOException $e) {
   $error = 'Database error: ' . $e->getMessage();
@@ -120,106 +132,106 @@ $recent_activities = [
       <?php include 'components/SideBar.php'; ?>
     </aside>
 
-    <!-- Work Area -->
     <main class="flex-1 bg-gray-200 rounded-t-xl overflow-auto">
       <div id="work-area" class="p-4" style="height: calc(100vh - 84px);">
         <!-- Title Bar -->
         <div class="mb-4">
-          <h2 class="text-2xl font-bold text-teal-900">Analytics Overview</h2>
-          <p class="text-sm text-teal-800">
+          <h2 class="text-2xl font-bold text-gray-800">Analytics Overview</h2>
+          <p class="text-sm text-gray-600">
             View key insights and performance metrics to monitor growth, track orders,
             and analyze sales performance effectively.
           </p>
         </div>
+        <!-- Search Bar -->
+        <div class="bg-white rounded-t-lg p-2 flex flex-row gap-2">
 
-        <?php if (isset($error)): ?>
-          <div class="text-red-600 text-sm"><?= htmlspecialchars($error) ?></div>
-        <?php else: ?>
+        </div>
 
-          <!-- Employee Grid -->
-          <!-- <div class="bg-white rounded-b-lg shadow-md flex flex-col" style="height: calc(100vh - 220px);"></div> -->
-
-          <div id="employee-dashboard-content" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 cursor-pointer">
-            <!-- Total Orders -->
-            <div class="bg-gradient-to-br from-white to-teal-50 text-teal-800 rounded-2xl shadow-lg p-5 h-48 flex flex-col justify-between transition hover:shadow-xl hover:scale-[1.02]">
-              <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold">Total Orders</h3>
-              </div>
-              <div class="flex items-center justify-center flex-1">
-                <div class="flex items-center space-x-3">
-                  <div class="bg-teal-100 p-3 rounded-full shadow-sm">
-                    <i class="fas fa-shopping-cart text-2xl text-teal-600"></i>
+        <!-- Employee Grid -->
+        <div class="bg-white rounded-b-lg shadow-md flex flex-col" style="height: calc(100vh - 190px);">
+          <div class="flex-1 overflow-auto ">
+            <div id="employee-dashboard-content" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 cursor-pointer">
+              <!-- Total Orders -->
+              <div class="bg-gradient-to-br from-white to-teal-50 text-teal-800 rounded-2xl shadow-lg p-5 h-48 flex flex-col justify-between transition hover:shadow-xl hover:scale-[1.02]">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-semibold">Total Orders</h3>
+                </div>
+                <div class="flex items-center justify-center flex-1">
+                  <div class="flex items-center space-x-3">
+                    <div class="bg-teal-100 p-3 rounded-full shadow-sm">
+                      <i class="fas fa-shopping-cart text-2xl text-teal-600"></i>
+                    </div>
+                    <div class="flex flex-col">
+                      <p class="text-2xl font-bold">
+                        <?= htmlspecialchars($total_orders) ?>
+                      </p>
+                      <span class="text-sm text-teal-500">All-time</span>
+                    </div>
                   </div>
-                  <div class="flex flex-col">
-                    <p class="text-2xl font-bold">
-                      <?= htmlspecialchars($total_orders) ?>
-                    </p>
-                    <span class="text-sm text-teal-500">All-time</span>
+                </div>
+              </div>
+
+              <!-- Completed Orders -->
+              <div class="bg-gradient-to-br from-white to-green-50 text-green-800 rounded-2xl shadow-lg p-5 h-48 flex flex-col justify-between transition hover:shadow-xl hover:scale-[1.02]">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-semibold">Completed Orders</h3>
+                </div>
+                <div class="flex items-center justify-center flex-1">
+                  <div class="flex items-center space-x-3">
+                    <div class="bg-green-100 p-3 rounded-full shadow-sm">
+                      <i class="fas fa-check-circle text-2xl text-green-600"></i>
+                    </div>
+                    <div class="flex flex-col">
+                      <p class="text-2xl font-bold"><?= htmlspecialchars($completed_orders) ?></p>
+                      <span class="text-sm text-green-500">Successful</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pending Orders -->
+              <div class="bg-gradient-to-br from-white to-yellow-50 text-yellow-800 rounded-2xl shadow-lg p-5 h-48 flex flex-col justify-between transition hover:shadow-xl hover:scale-[1.02]">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-semibold">Pending Orders</h3>
+                </div>
+                <div class="flex items-center justify-center flex-1">
+                  <div class="flex items-center space-x-3">
+                    <div class="bg-yellow-100 p-3 rounded-full shadow-sm">
+                      <i class="fas fa-hourglass-half text-2xl text-yellow-600"></i>
+                    </div>
+                    <div class="flex flex-col">
+                      <p class="text-2xl font-bold"><?= htmlspecialchars($pending_orders) ?></p>
+                      <span class="text-sm text-yellow-500">Awaiting Action</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Revenue -->
+              <div class="bg-gradient-to-br from-white to-indigo-50 text-indigo-800 rounded-2xl shadow-lg p-5 h-48 flex flex-col justify-between transition hover:shadow-xl hover:scale-[1.02]">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-semibold">Revenue</h3>
+                </div>
+                <div class="flex items-center justify-center flex-1">
+                  <div class="flex items-center space-x-3">
+                    <div class="bg-indigo-100 p-3 rounded-full shadow-sm">
+                      <i class="fas fa-dollar-sign text-2xl text-indigo-600"></i>
+                    </div>
+                    <div class="flex flex-col">
+                      <p class="text-2xl font-bold">₱<?= number_format($revenue, 2) ?></p>
+                      <span class="text-sm text-indigo-500">This Month</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Completed Orders -->
-            <div class="bg-gradient-to-br from-white to-green-50 text-green-800 rounded-2xl shadow-lg p-5 h-48 flex flex-col justify-between transition hover:shadow-xl hover:scale-[1.02]">
-              <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold">Completed Orders</h3>
-              </div>
-              <div class="flex items-center justify-center flex-1">
-                <div class="flex items-center space-x-3">
-                  <div class="bg-green-100 p-3 rounded-full shadow-sm">
-                    <i class="fas fa-check-circle text-2xl text-green-600"></i>
-                  </div>
-                  <div class="flex flex-col">
-                    <p class="text-2xl font-bold"><?= htmlspecialchars($completed_orders) ?></p>
-                    <span class="text-sm text-green-500">Successful</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Pending Orders -->
-            <div class="bg-gradient-to-br from-white to-yellow-50 text-yellow-800 rounded-2xl shadow-lg p-5 h-48 flex flex-col justify-between transition hover:shadow-xl hover:scale-[1.02]">
-              <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold">Pending Orders</h3>
-              </div>
-              <div class="flex items-center justify-center flex-1">
-                <div class="flex items-center space-x-3">
-                  <div class="bg-yellow-100 p-3 rounded-full shadow-sm">
-                    <i class="fas fa-hourglass-half text-2xl text-yellow-600"></i>
-                  </div>
-                  <div class="flex flex-col">
-                    <p class="text-2xl font-bold"><?= htmlspecialchars($pending_orders) ?></p>
-                    <span class="text-sm text-yellow-500">Awaiting Action</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Revenue -->
-            <div class="bg-gradient-to-br from-white to-indigo-50 text-indigo-800 rounded-2xl shadow-lg p-5 h-48 flex flex-col justify-between transition hover:shadow-xl hover:scale-[1.02]">
-              <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold">Revenue</h3>
-              </div>
-              <div class="flex items-center justify-center flex-1">
-                <div class="flex items-center space-x-3">
-                  <div class="bg-indigo-100 p-3 rounded-full shadow-sm">
-                    <i class="fas fa-dollar-sign text-2xl text-indigo-600"></i>
-                  </div>
-                  <div class="flex flex-col">
-                    <p class="text-2xl font-bold">₱<?= number_format($revenue, 2) ?></p>
-                    <span class="text-sm text-indigo-500">This Month</span>
-                  </div>
-                </div>
-              </div>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mt-6">
+              <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Sales Overview</h2>
+              <canvas id="sales-chart" class="w-full"></canvas>
             </div>
           </div>
-
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mt-6">
-            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Sales Overview</h2>
-            <canvas id="sales-chart" class="w-full h-64"></canvas>
-          </div>
-        <?php endif; ?>
+        </div>
       </div>
     </main>
   </div>

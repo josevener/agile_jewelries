@@ -435,21 +435,12 @@ try {
       }
     });
 
-    // Sidebar Toggle for Mobile
-    const menuToggle = document.getElementById('menu-toggle');
-    const sidebar = document.getElementById('sidebar');
-    menuToggle.addEventListener('click', () => {
-      console.log("Toggling sidebar");
-      sidebar.classList.toggle('-translate-x-full');
-    });
-
     // Get header checkbox
     const selectAll = document.getElementById('select-all');
 
     if (selectAll) {
       // Toggle all when header is clicked
       selectAll.addEventListener('change', function() {
-        console.log("Select all changed:", this.checked);
         document.querySelectorAll('.row-checkbox:not(:disabled)').forEach(cb => {
           cb.checked = this.checked;
         });
@@ -459,7 +450,6 @@ try {
       // Use event delegation for row checkboxes
       document.addEventListener('change', function(e) {
         if (e.target.classList.contains('row-checkbox')) {
-          console.log("Row checkbox changed");
           const all = document.querySelectorAll('.row-checkbox:not(:disabled)');
           const checked = document.querySelectorAll('.row-checkbox:checked');
           selectAll.checked = all.length === checked.length;
@@ -470,19 +460,16 @@ try {
 
     function updateChangeStatusBtn() {
       const checked = document.querySelectorAll('.row-checkbox:checked').length;
-      console.log("Updating change status button, checked count:", checked);
       changeStatusBtn.disabled = checked === 0;
     }
 
     // Change Password Modal
     function showChangePasswordModal() {
-      console.log("Showing change password modal");
       document.getElementById('change-password-modal').classList.remove('hidden');
       userMenu.classList.add('hidden');
     }
 
     function closeChangePasswordModal() {
-      console.log("Closing change password modal");
       document.getElementById('change-password-modal').classList.add('hidden');
     }
 
@@ -497,7 +484,6 @@ try {
           }
         });
         if (res.ok) {
-          console.log("Logout successful, redirecting to login.php");
           window.location.href = 'login.php';
         }
       } catch (error) {
@@ -506,7 +492,6 @@ try {
     }
 
     function openOrderDetails(order) {
-      console.log("Opening order details for order ID:", order.id);
       const modal = document.getElementById('order-details-modal');
       const modalTitle = document.getElementById('order-modal-title');
       const modalContent = document.getElementById('order-modal-content');
@@ -524,7 +509,6 @@ try {
     }
 
     function closeOrderDetailsModal() {
-      console.log("Closing order details modal");
       document.getElementById('order-details-modal').classList.add('hidden');
     }
 
@@ -532,7 +516,6 @@ try {
     const workArea = document.getElementById('work-area');
 
     function resizeWorkArea() {
-      console.log("Resizing work area");
       workArea.style.height = (window.innerHeight - 84) + 'px';
     }
     window.addEventListener('resize', resizeWorkArea);
