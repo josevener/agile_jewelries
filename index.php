@@ -265,6 +265,73 @@
             </div>
         </section>
 
+        <section class="bg-gray-50 py-6">
+            <div class="flex flex-col max-w-lg mx-auto p-4 space-y-6">
+                <!-- Top: image + main commitment -->
+                <div class="flex flex-col gap-4">
+                    <img
+                        src="assets/sec/gov.png"
+                        alt="Agile Jewelries quality badge"
+                        class="w-full h-48 object-contain rounded-md shadow-sm bg-white p-4"
+                        loading="lazy" />
+                    <div class="bg-white rounded-xl p-6 shadow-sm ring-1 ring-gray-100 text-center">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-2">Our Commitment</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            Bringing customer satisfaction and the best quality products — crafted with care and delivered fast.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature cards (stacked like in image) -->
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-semibold rounded-lg px-6 py-4 shadow-md">
+                        <i class="fa-solid fa-truck-fast text-2xl" aria-hidden="true"></i>
+                        <span class="uppercase">Nationwide Shipping</span>
+                    </div>
+
+                    <div class="flex items-center gap-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-semibold rounded-lg px-6 py-4 shadow-md">
+                        <i class="fa-solid fa-arrows-spin text-2xl" aria-hidden="true"></i>
+                        <span class="uppercase">30 Days Free Exchange</span>
+                    </div>
+
+                    <div class="flex items-center gap-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-semibold rounded-lg px-6 py-4 shadow-md">
+                        <i class="fa-solid fa-boxes-packing text-2xl" aria-hidden="true"></i>
+                        <span class="uppercase">Cash on Delivery</span>
+                    </div>
+
+                    <div class="flex items-center gap-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-semibold rounded-lg px-6 py-4 shadow-md">
+                        <i class="fa-solid fa-headset text-2xl" aria-hidden="true"></i>
+                        <span class="uppercase">Customer Support</span>
+                    </div>
+                </div>
+
+                <!-- About Us -->
+                <aside>
+                    <div class="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl p-6 shadow-sm ring-1 ring-gray-100 text-center">
+                        <h3 class="text-lg font-semibold text-white">About Us</h3>
+
+                        <ul class="mt-4 space-y-3 text-sm text-white text-left">
+                            <li>
+                                <p class="text-white font-medium">Website</p>
+                                <a href="https://agilejewelries.com" class="text-indigo-600 hover:underline">agilejewelries.com</a>
+                            </li>
+                            <li>
+                                <p class="text-white font-medium">Email</p>
+                                <a href="mailto:agilejewelries@gmail.com" class="text-indigo-600 hover:underline">agilejewelries@gmail.com</a>
+                            </li>
+                            <li>
+                                <p class="text-white font-medium">Hotline</p>
+                                <a href="tel:+639123456789" class="text-indigo-600 hover:underline">0912-345-6789</a>
+                            </li>
+                        </ul>
+
+                        <h3 class="mt-6 text-lg font-semibold text-white">Customer Care</h4>
+                        <p class="text-xs text-white mt-2">Mon–Fri, 9AM–6PM</p>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
         <!-- Modal for Validation and Order Confirmation -->
         <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
             <div class="bg-white p-6 rounded-lg max-w-md w-full">

@@ -1,3 +1,7 @@
+<?php 
+ include_once "../config/database.php";
+?>
+
 <div class="container mx-auto flex items-center justify-between px-4">
     <!-- Logo and Product Name -->
     <div class="flex items-center space-x-2">
@@ -191,22 +195,28 @@
                 if (!currentPassword) {
                     errors.push("Current password is required.");
                     currentPasswordInput.classList.add("border-red-500");
-                } else {
+                } 
+                else {
                     currentPasswordInput.classList.remove("border-red-500");
                 }
+
                 if (!newPassword) {
                     errors.push("New password is required.");
                     newPasswordInput.classList.add("border-red-500");
-                } else if (newPassword.length < 8) {
+                } 
+                else if (newPassword.length < 8) {
                     errors.push("New password must be at least 8 characters long.");
                     newPasswordInput.classList.add("border-red-500");
-                } else {
+                } 
+                else {
                     newPasswordInput.classList.remove("border-red-500");
                 }
+
                 if (newPassword !== confirmPassword) {
                     errors.push("New password and confirmation do not match.");
                     confirmPasswordInput.classList.add("border-red-500");
-                } else {
+                } 
+                else {
                     confirmPasswordInput.classList.remove("border-red-500");
                 }
 
@@ -225,7 +235,7 @@
 
                 try {
                     console.log("Sending request to change_password.php");
-                    const response = await fetch("change_password.php", {
+                    const response = await fetch("helpers/change_password.php", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -243,7 +253,8 @@
                     if (data.success) {
                         showModal("Success", data.message);
                         closeChangePasswordModal();
-                    } else {
+                    } 
+                    else {
                         showModal(
                             "Change Password Error",
                             "<ul class='list-disc pl-5'>" +
@@ -251,20 +262,23 @@
                             "</ul>"
                         );
                     }
-                } catch (err) {
+                } 
+                catch (err) {
                     console.error("Change password failed:", err);
                     showModal(
                         "Network Error",
-                        "Could not connect to the server. Please try again later."
+                        "Could not connect to the server. Please try again later." .err
                     );
-                } finally {
+                } 
+                finally {
                     hideLoadingModal();
                     savePasswordBtn.textContent = "Save";
                     savePasswordBtn.disabled = false;
                     savePasswordBtn.classList.remove("opacity-50", "cursor-not-allowed");
                 }
             });
-        } else {
+        } 
+        else {
             console.error("Required elements not found:", {
                 savePasswordBtn: !!savePasswordBtn,
                 changePasswordForm: !!changePasswordForm,

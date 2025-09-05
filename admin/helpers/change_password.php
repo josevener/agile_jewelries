@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once '../dashboard.php';
+include_once "../../config/database.php";
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -26,11 +26,14 @@ $errors = [];
 if (empty($current_password)) {
     $errors[] = 'Current password is required.';
 }
+
 if (empty($new_password)) {
     $errors[] = 'New password is required.';
-} elseif (strlen($new_password) < 8) {
+} 
+elseif (strlen($new_password) < 8) {
     $errors[] = 'New password must be at least 8 characters long.';
 }
+
 if ($new_password !== $confirm_password) {
     $errors[] = 'New password and confirmation do not match.';
 }
@@ -68,7 +71,8 @@ try {
     $stmt->execute([$new_password_hash, $_SESSION['user_id']]);
 
     echo json_encode(['success' => true, 'message' => 'Password updated successfully.']);
-} catch (PDOException $e) {
+} 
+catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'errors' => ['Database error: ' . $e->getMessage()]]);
 }

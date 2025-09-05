@@ -443,33 +443,6 @@ try {
       sidebar.classList.toggle('-translate-x-full');
     });
 
-    // User Menu Dropdown
-    const userMenuToggle = document.getElementById('user-menu-toggle');
-    const userMenu = document.getElementById('user-menu');
-    userMenuToggle.addEventListener('click', () => {
-      console.log("Toggling user menu");
-      userMenu.classList.toggle('hidden');
-    });
-
-    // Close user menu when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!userMenu.contains(e.target) && !userMenuToggle.contains(e.target)) {
-        console.log("Closing user menu");
-        userMenu.classList.add('hidden');
-      }
-    });
-
-    // Navigation Toggle
-    function toggleNav(button) {
-      console.log("Toggling navigation");
-      const ul = button.nextElementSibling;
-      const icon = button.querySelector('.expand-icon');
-      ul.classList.toggle('hidden');
-      icon.innerHTML = ul.classList.contains('hidden') ?
-        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />' :
-        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />';
-    }
-
     // Get header checkbox
     const selectAll = document.getElementById('select-all');
 

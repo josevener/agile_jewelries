@@ -22,56 +22,23 @@ try {
   $completed_orders = $result['completed_orders'];
   $pending_orders = $result['pending_orders'];
 
-
-  // Generate all months for the current year
-  $months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-  ];
-  $current_month = date('n');
-  $current_year = date('Y');
-
-  // Monthly sales query with data up to current month
-  $salesStmt = $pdo->prepare("
-      WITH all_months AS (
-          SELECT n AS month_num, DATE_FORMAT(STR_TO_DATE(n, '%m'), '%b') AS month_name
-          FROM (
-              SELECT a.N + b.N * 10 + 1 AS n
-              FROM 
-                  (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION 
-                    SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
-                  (SELECT 0 AS N UNION SELECT 1) b
-              ORDER BY n
-          ) months
-          WHERE n <= ?
-      )
+  // Monthly sales for chart
+  $salesStmt = $pdo->query("
       SELECT 
-          all_months.month_name AS month,
-          COALESCE(SUM(CASE WHEN o.order_status = 'completed' 
-                        THEN (CASE WHEN o.men_set = 1 OR o.women_set = 1 THEN amount ELSE 0 END) 
-                        ELSE 0 END), 0) AS monthly_revenue
-      FROM all_months
-      LEFT JOIN orders o
-          ON MONTH(o.created_at) = all_months.month_num
-          AND YEAR(o.created_at) = ?
-      GROUP BY all_months.month_num, all_months.month_name
-      ORDER BY all_months.month_num
+          DATE_FORMAT(created_at, '%b') AS month,
+          SUM(CASE WHEN order_status = 'completed' 
+                   THEN (CASE WHEN men_set = 1 OR women_set = 1 THEN 999 ELSE 0 END) 
+                   ELSE 0 END) AS monthly_revenue
+      FROM orders
+      WHERE YEAR(created_at) = YEAR(CURDATE())
+      GROUP BY MONTH(created_at)
+      ORDER BY MONTH(created_at)
   ");
-  $salesStmt->execute([$current_month, $current_year]);
 
   $salesData = $salesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-  // Prepare labels and revenues for all 12 months
-  $labels = $months; // Use all months for chart labels
-  $revenues = array_fill(0, $current_month, null); // Initialize with null up to current month
-
-  // Fill revenues for months up to current month
-  foreach ($salesData as $data) {
-      $month_index = array_search($data['month'], $months);
-      if ($month_index !== false && $month_index < $current_month) {
-          $revenues[$month_index] = $data['monthly_revenue'];
-      }
-  }
+  $labels   = array_column($salesData, 'month');
+  $revenues = array_column($salesData, 'monthly_revenue');
 } catch (PDOException $e) {
   $error = 'Database error: ' . $e->getMessage();
 }
