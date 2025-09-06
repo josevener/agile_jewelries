@@ -149,7 +149,7 @@ $recent_activities = [
 
         <!-- Employee Grid -->
         <div class="bg-white rounded-b-lg shadow-md flex flex-col" style="height: calc(100vh - 190px);">
-          <div class="flex-1 overflow-auto ">
+          <div class="flex-1 overflow-auto px-2">
             <div id="employee-dashboard-content" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 cursor-pointer">
               <!-- Total Orders -->
               <div class="bg-gradient-to-br from-white to-teal-50 text-teal-800 rounded-2xl shadow-lg p-5 h-48 flex flex-col justify-between transition hover:shadow-xl hover:scale-[1.02]">

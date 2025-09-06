@@ -2,6 +2,18 @@
 session_start();
 require_once __DIR__ . "../../config/database.php";
 
+// Example: only allow POST requests, block direct visits
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(403); // Forbidden
+    
+    // Show a message before redirect
+    echo "Access denied. Redirecting to login page...";
+    
+    // Redirect after 3 seconds
+    header("refresh:3;url=login.php");
+    exit();
+}
+
 // If already logged in, redirect back
 if (!empty($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
   $redirect = $_SESSION['redirect_to'] ?? 'dashboard.php';

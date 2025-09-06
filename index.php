@@ -14,7 +14,12 @@
 
     <link rel="stylesheet" href="assets/fontawesome/css/all.min.css">
 </head>
+<style>
+html {
+    scroll-behavior: smooth;
+}
 
+</style>
 <body class="bg-white text-gray-900">
     <!-- Header -->
     <header class="max-w-lg mx-auto text-center bg-yellow-400 py-2 text-sm font-bold">
@@ -313,16 +318,16 @@
                         <h3 class="text-lg font-semibold text-gray-800">About Us</h3>
 
                         <ul class="mt-4 space-y-3 text-sm text-left">
-                            <li>
-                                <p class="text-gray-600 font-medium">Website</p>
+                            <li class="flex flex-row gap-2">
+                                <p class="text-gray-600 font-medium">Website:</p>
                                 <a href="https://agilejewelries.com" target="_blank" class="text-indigo-600 hover:underline">agilejewelries.com</a>
                             </li>
-                            <li>
-                                <p class="text-gray-600 font-medium">Email</p>
+                            <li class="flex flex-row gap-2">
+                                <p class="text-gray-600 font-medium">Email:</p>
                                 <a href="mailto:agilejewelries@gmail.com" class="text-indigo-600 hover:underline">agilejewelries@gmail.com</a>
                             </li>
-                            <li>
-                                <p class="text-gray-600 font-medium">Hotline</p>
+                            <li class="flex flex-row gap-2">
+                                <p class="text-gray-600 font-medium">Hotline:</p>
                                 <a href="tel:+639123456789" class="text-indigo-600 hover:underline">0912-345-6789</a>
                             </li>
                         </ul>
