@@ -30,9 +30,22 @@ if (empty($current_password)) {
 if (empty($new_password)) {
     $errors[] = 'New password is required.';
 } 
-elseif (strlen($new_password) < 8) {
-    $errors[] = 'New password must be at least 8 characters long.';
+else {
+    if (strlen($new_password) < 8) {
+        $errors[] = 'New password must be at least 8 characters long.';
+    }
+    // Strength check: at least one uppercase, one lowercase, and one number
+    if (!preg_match('/[A-Z]/', $new_password)) {
+        $errors[] = 'New password must contain at least one uppercase letter.';
+    }
+    if (!preg_match('/[a-z]/', $new_password)) {
+        $errors[] = 'New password must contain at least one lowercase letter.';
+    }
+    if (!preg_match('/[0-9]/', $new_password)) {
+        $errors[] = 'New password must contain at least one number.';
+    }
 }
+
 
 if ($new_password !== $confirm_password) {
     $errors[] = 'New password and confirmation do not match.';
