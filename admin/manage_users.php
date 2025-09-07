@@ -8,7 +8,7 @@ $currentUserId = $_SESSION['user_id'] ?? null;
 try {
     $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-    $query = 'SELECT * FROM users WHERE id != 1';
+    $query = 'SELECT * FROM users WHERE id != 1 AND STATUS = "active"';
     if ($search !== '') {
         $query .= ' WHERE first_name LIKE ?
                 OR middle_name LIKE ?

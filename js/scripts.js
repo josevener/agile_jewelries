@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch("https://psgc.cloud/api/regions");
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const regions = await res.json();
-      console.log("Regions fetched:", regions);
       if (provinceSelect) {
         provinceSelect.innerHTML = '<option value="" disabled selected>Select Province</option>';
         regions.forEach(region => {
@@ -35,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`https://psgc.cloud/api/v2/regions/${code}/cities-municipalities`);
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const cities = await res.json();
-      console.log("Cities fetched for region", code, ":", cities);
       citySelect.innerHTML = '<option value="" disabled selected>Select City/Municipality</option>';
       cities.data.forEach(city => {
         const option = document.createElement("option");
@@ -64,7 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`https://psgc.cloud/api/v2/cities-municipalities/${code}/barangays`);
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const barangays = await res.json();
-      console.log("Barangays fetched for city", code, ":", barangays);
       barangaySelect.innerHTML = '<option value="" disabled selected>Select Barangay</option>';
       barangays.data.forEach(barangay => {
         const option = document.createElement("option");
@@ -88,7 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
       provinceSelect.addEventListener("change", () => {
         const selectedOption = provinceSelect.selectedOptions[0];
         const code = selectedOption ? selectedOption.dataset.code : null;
-        console.log("Province selected:", provinceSelect.value, "Code:", code);
         if (code) {
           fetchCitiesMunicipalities(code);
         } else {
@@ -103,7 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
       citySelect.addEventListener("change", () => {
         const selectedOption = citySelect.selectedOptions[0];
         const code = selectedOption ? selectedOption.dataset.code : null;
-        console.log("City selected:", citySelect.value, "Code:", code);
         if (code) {
           fetchBarangays(code);
         } else {
@@ -123,7 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   buyButtons.forEach(button => {
     button.addEventListener("click", () => {
-      console.log("Buy Now button clicked, scrolling to order form");
       if (orderForm) {
         const headerHeight = header ? header.offsetHeight : 0;
         const formPosition = orderForm.getBoundingClientRect().top + window.pageYOffset - headerHeight;
