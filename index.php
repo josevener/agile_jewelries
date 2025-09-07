@@ -475,7 +475,7 @@
                         <ul class="mt-4 space-y-3 text-sm text-left">
                             <li class="flex flex-row gap-2">
                                 <p class="text-gray-600 font-medium">Website:</p>
-                                <a href="https://agilejewelries.com" target="_blank" class="text-indigo-600 hover:underline">agilejewelries.com</a>
+                                <a href="https://agilejewelries.store" target="_blank" class="text-indigo-600 hover:underline">agilejewelries.store</a>
                             </li>
                             <li class="flex flex-row gap-2">
                                 <p class="text-gray-600 font-medium">Email:</p>
@@ -483,7 +483,7 @@
                             </li>
                             <li class="flex flex-row gap-2">
                                 <p class="text-gray-600 font-medium">Hotline:</p>
-                                <a href="tel:+639123456789" class="text-indigo-600 hover:underline">0912-345-6789</a>
+                                <a href="tel:+639123456789" class="text-indigo-600 hover:underline">0912-6789-345</a>
                             </li>
                         </ul>
 
