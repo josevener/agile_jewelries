@@ -398,18 +398,15 @@ try {
     }
 
     function closeFeedbackModal() {
-      console.log("Closing feedback modal");
       document.getElementById("feedback-modal").classList.add("hidden");
     }
 
     // Show/hide filter loading modal
     function showFilterLoadingModal() {
-      console.log("Showing filter loading modal");
       document.getElementById("loading-modal").classList.remove("hidden");
     }
 
     function hideFilterLoadingModal() {
-      console.log("Hiding filter loading modal");
       document.getElementById("loading-modal").classList.add("hidden");
     }
 
@@ -529,7 +526,6 @@ try {
     }
 
     function closeChangeStatusModal() {
-      console.log("Closing change status modal");
       document.getElementById("change-status-modal").classList.add("hidden");
       document.getElementById("status-selection").classList.remove("hidden");
       document.getElementById("status-confirmation").classList.add("hidden");
@@ -543,7 +539,6 @@ try {
 
     // Open modal
     changeStatusBtn.addEventListener("click", () => {
-      console.log("Change Status button clicked");
       document.getElementById("change-status-modal").classList.remove("hidden");
     });
 
@@ -575,12 +570,6 @@ try {
         document.getElementById("loading-state").classList.remove("hidden");
         document.querySelectorAll(".cancel-btn, .confirm-btn").forEach(btn => btn.disabled = true);
 
-        // Log the request
-        console.log("Sending update request:", {
-          order_ids: ids,
-          status: newStatus
-        });
-
         // Step 3: Apply change via AJAX
         fetch("update_order_status.php", {
             method: "POST",
@@ -593,11 +582,9 @@ try {
             })
           })
           .then(res => {
-            console.log("Fetch response status:", res.status);
             return res.json();
           })
           .then(data => {
-            console.log("Fetch response data:", data);
             document.getElementById("loading-state").classList.add("hidden");
             document.getElementById("result-state").classList.remove("hidden");
             confirmStepBtn.textContent = "Close";
@@ -608,7 +595,6 @@ try {
               document.getElementById("result-message").textContent = `Successfully updated ${data.updated_count} order(s) to ${data.new_status}.`;
               // Auto-close after 2 seconds and reload
               setTimeout(() => {
-                console.log("Auto-closing change status modal after success");
                 closeChangeStatusModal();
                 location.reload();
               }, 2000);
@@ -630,7 +616,6 @@ try {
           });
       } else if (resultStep) {
         // Step 4: Manual close and reload on success
-        console.log("Manual close triggered in result step");
         if (document.getElementById("result-message").className.includes("text-green-700")) {
           location.reload();
         }
@@ -641,7 +626,6 @@ try {
     // Select All checkbox logic
     if (selectAll) {
       selectAll.addEventListener('change', function() {
-        console.log("Select All changed:", this.checked);
         document.querySelectorAll('.row-checkbox:not(:disabled)').forEach(cb => {
           cb.checked = this.checked;
         });
@@ -651,7 +635,6 @@ try {
       // Use event delegation on the table for row checkboxes
       ordersTable.addEventListener('change', function(e) {
         if (e.target.classList.contains('row-checkbox')) {
-          console.log("Row checkbox changed:", e.target.dataset.id, e.target.checked);
           const all = document.querySelectorAll('.row-checkbox:not(:disabled)');
           const checked = document.querySelectorAll('.row-checkbox:checked');
           selectAll.checked = all.length === checked.length && all.length > 0;
@@ -662,7 +645,6 @@ try {
 
     function updateChangeStatusBtn() {
       const checked = document.querySelectorAll('.row-checkbox:checked').length;
-      console.log("Checked boxes:", checked, "Change Status disabled:", checked === 0);
       changeStatusBtn.disabled = checked === 0;
     }
 
@@ -699,7 +681,6 @@ try {
     }
 
     function closeOrderDetailsModal() {
-      console.log("Closing order details modal");
       document.getElementById('order-details-modal').classList.add('hidden');
     }
 

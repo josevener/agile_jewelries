@@ -44,7 +44,7 @@ try {
         }
 
         // Delete user
-        $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
+        $stmt = $pdo->prepare("UPDAtE users set STATUS = 'inactive' WHERE id = ?");
         $stmt->execute([$id]);
         echo json_encode(['success' => true, 'message' => 'User deleted successfully']);
         exit;

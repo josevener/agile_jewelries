@@ -1,5 +1,13 @@
 <?php
 include_once "../config/database.php";
+
+// Use existing CSRF token or log error if not set
+$logout_csrf_token = $_SESSION['logout_csrf_token'] ?? '';
+if (!$logout_csrf_token) {
+    error_log("CSRF token not found in session for TopBar.php");
+} else {
+    error_log("CSRF token in TopBar.php: {$logout_csrf_token}");
+}
 ?>
 
 <div class="container mx-auto flex items-center justify-between px-4">
@@ -37,7 +45,7 @@ include_once "../config/database.php";
 <!-- User Menu Dropdown -->
 <div id="user-menu" class="hidden absolute top-16 right-4 bg-white shadow-lg rounded-md py-2 w-48 z-30">
     <button class="w-full text-left px-4 py-2 hover:bg-gray-100" onclick="showChangePasswordModal()">Change Password</button>
-    <button class="w-full text-left px-4 py-2 hover:bg-gray-100" onclick="logout()">Logout</button>
+    <button id="logout-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
 </div>
 
 <!-- Change Password Modal -->
@@ -64,7 +72,8 @@ include_once "../config/database.php";
         </div>
     </div>
 </div>
-<!-- Message Modal for Success/Error -->
+
+<!-- Message Modal for Change Password -->
 <div id="message-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white p-6 rounded-lg w-full max-w-md">
         <h2 id="message-modal-title" class="text-lg font-bold mb-4"></h2>
@@ -75,11 +84,11 @@ include_once "../config/database.php";
     </div>
 </div>
 
-<?php include_once('LoadingModal.php') ?>
+<?php include_once 'LoadingModal.php'; ?>
 
 <script>
     (function() {
-        // Message Modal Logic
+        // Message Modal Logic (used only for change password)
         function showModal(title, message) {
             const modal = document.getElementById("message-modal");
             const modalTitle = document.getElementById("message-modal-title");
@@ -158,7 +167,6 @@ include_once "../config/database.php";
 
         if (userMenuToggle && userMenu) {
             userMenuToggle.addEventListener("click", () => {
-                console.log("User menu toggled");
                 userMenu.classList.toggle("hidden");
             });
         }
@@ -216,11 +224,8 @@ include_once "../config/database.php";
                     return;
                 }
 
-                // Show loading modal
                 showLoadingModal();
-
                 try {
-                    console.log("Sending request to change_password.php");
                     const response = await fetch("helpers/change_password.php", {
                         method: "POST",
                         headers: {
@@ -234,13 +239,11 @@ include_once "../config/database.php";
                     });
 
                     const data = await response.json();
-                    console.log("Response from change_password.php:", data);
 
                     if (data.success) {
                         showModal("Success", data.message);
                         closeChangePasswordModal();
-                    } 
-                    else {
+                    } else {
                         showModal(
                             "Change Password Error",
                             "<ul class='list-disc pl-5'>" +
@@ -248,23 +251,19 @@ include_once "../config/database.php";
                             "</ul>"
                         );
                     }
-                } 
-                catch (err) {
-                    console.error("Change password failed:", err);
+                } catch (err) {
                     showModal(
                         "Network Error",
-                        "Could not connect to the server. Please try again later.".err
+                        "Could not connect to the server. Please try again later."
                     );
-                } 
-                finally {
+                } finally {
                     hideLoadingModal();
                     savePasswordBtn.textContent = "Save";
                     savePasswordBtn.disabled = false;
                     savePasswordBtn.classList.remove("opacity-50", "cursor-not-allowed");
                 }
             });
-        } 
-        else {
+        } else {
             console.error("Required elements not found:", {
                 savePasswordBtn: !!savePasswordBtn,
                 changePasswordForm: !!changePasswordForm,
@@ -277,14 +276,45 @@ include_once "../config/database.php";
         // Sidebar Toggle for Mobile
         const menuToggle = document.getElementById('menu-toggle');
         const sidebar = document.getElementById('sidebar');
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
-        });
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+            });
+        }
 
         // Logout Function
-        window.logout = function() {
-            console.log("Logout called");
-            window.location.href = "logout.php";
-        };
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async () => {
+                try {
+                    const response = await fetch("logout.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            csrf_token: "<?= htmlspecialchars($logout_csrf_token) ?>"
+                        })
+                    });
+                    if (!response.ok) {
+                        const text = await response.text();
+                        throw new Error(`Logout request failed with status ${response.status}`);
+                    }
+                    const data = await response.json();
+                    // Force redirect since session is destroyed on server
+                    document.cookie = "PHPSESSID=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+                    window.location.href = "login.php";
+                } catch (err) {
+                    console.error("Logout error:", err.message);
+                    // Force redirect since session is confirmed destroyed
+                    document.cookie = "PHPSESSID=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+                    window.location.href = "login.php";
+                } finally {
+                    hideLoadingModal();
+                }
+            });
+        } else {
+            console.error("Logout button not found");
+        }
     })();
 </script>

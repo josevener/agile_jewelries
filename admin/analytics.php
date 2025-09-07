@@ -241,7 +241,6 @@ $recent_activities = [
     const labels = <?= json_encode($labels) ?>;
     const revenues = <?= json_encode($revenues) ?>;
 
-    console.log(`labels: ${labels}, revenue: ${revenues}`);
     const ctx = document.getElementById('sales-chart')?.getContext('2d');
     if (ctx) {
       new Chart(ctx, {
