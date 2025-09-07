@@ -1,1 +1,13 @@
 config/database.php
+
+# Node.js
+node_modules/
+npm-debug.log
+package-lock.json
+
+# Build output
+css/output.css
+
+# Environment-specific files
+.env
+*.log

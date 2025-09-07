@@ -4,14 +4,14 @@ require_once __DIR__ . "../../config/database.php";
 
 // Example: only allow POST requests, block direct visits
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(403); // Forbidden
-    
-    // Show a message before redirect
-    echo "403 — Forbidden page. Redirecting to login page...";
-    
-    // Redirect after 2 seconds
-    header("refresh:2;url=login.php");
-    exit();
+  http_response_code(403); // Forbidden
+
+  // Show a message before redirect
+  echo "403 — Forbidden page. Redirecting to login page...";
+
+  // Redirect after 2 seconds
+  header("refresh:2;url=login.php");
+  exit();
 }
 
 // If already logged in, redirect back
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/output.css">
 </head>
 
 <body class="min-h-screen flex items-center justify-center p-4 bg-cover bg-center"
