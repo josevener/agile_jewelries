@@ -67,9 +67,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
+<style>
+  body {
+    background-color: #f9fafb;
+    /* fallback color */
+    background-image: url('../assets/agile_bg.webp');
+  }
+</style>
 <!-- bg-gradient-to-br from-teal-500 via-emerald-500 to-cyan-600 -->
-<body class="min-h-screen  flex items-center justify-center p-4 bg-cover bg-center" 
-    style="background-image: url('../assets/agile_bg.png');">>
+
+<body class="min-h-screen flex items-center justify-center p-4 bg-cover bg-center">
 
   <div class="bg-white shadow-2xl rounded-2xl w-full max-w-md p-8">
     <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Login</h2>

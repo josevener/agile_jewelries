@@ -19,6 +19,12 @@ try {
     $women_set = filter_input(INPUT_POST, 'women_set', FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
     $ip_address = sanitize('ip_address', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
+    // Base price
+    $set_price = 898;
+
+    // Calculate amount
+    $amount = ($men_set + $women_set) * $set_price;
+
     // Validation
     $errors = [];
     if (!filter_var($ip_address, FILTER_VALIDATE_IP)) {
@@ -54,8 +60,8 @@ try {
 
     // Insert
     $stmt = $pdo->prepare('
-        INSERT INTO orders (customer_name, phone_number, address, province, city, barangay, men_set, women_set, ip_address)
-        VALUES (:customer_name, :phone_number, :address, :province, :city, :barangay, :men_set, :women_set, :ip_address)
+        INSERT INTO orders (customer_name, phone_number, address, province, city, barangay, men_set, women_set, amount, ip_address)
+        VALUES (:customer_name, :phone_number, :address, :province, :city, :barangay, :men_set, :women_set, :amount, :ip_address)
     ');
     $stmt->execute([
         ':customer_name' => $customer_name,
@@ -66,6 +72,7 @@ try {
         ':barangay' => $barangay,
         ':men_set' => $men_set,
         ':women_set' => $women_set,
+        ':amount' => $amount,
         ':ip_address' => $ip_address
     ]);
 
@@ -80,7 +87,8 @@ try {
             'city' => $city,
             'barangay' => $barangay,
             'men_set' => $men_set,
-            'women_set' => $women_set
+            'women_set' => $women_set,
+            'amount' => $amount
         ]
     ]);
 } catch (PDOException $e) {

@@ -224,8 +224,8 @@ document.addEventListener("DOMContentLoaded", () => {
               <p><strong>Name:</strong> ${data.order.customer_name}</p>
               <p><strong>Phone:</strong> ${data.order.phone_number}</p>
               <p><strong>Address:</strong> ${data.order.address}, ${data.order.barangay}, ${data.order.city}, ${data.order.province}</p>
-              <p><strong>Products:</strong> ${data.order.men_set ? "Men's Set" : ""} ${data.order.women_set ? "Women's Set" : ""}</p>
-            `
+              <p><strong>Products:</strong> ${data.order.men_set ? "Men's Set " : ""} ${data.order.women_set ? "Women's Set " : ""}</p>
+              <p class="text-lg"><strong>Total Amount:</strong>₱${data.order.amount}</p>`
           );
           this.reset();
           // Reset dropdowns

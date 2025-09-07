@@ -15,11 +15,11 @@
     <link rel="stylesheet" href="assets/fontawesome/css/all.min.css">
 </head>
 <style>
-html {
-    scroll-behavior: smooth;
-}
-
+    html {
+        scroll-behavior: smooth !important;
+    }
 </style>
+
 <body class="bg-white text-gray-900">
     <!-- Header -->
     <header class="max-w-lg mx-auto text-center bg-yellow-400 py-2 text-sm font-bold">
@@ -28,15 +28,11 @@ html {
 
     <main class="max-w-lg mx-auto p-4">
         <!-- Hero Section -->
-        <section class="text-center">
-            <hr class="border-t-4 border-gray-800 my-2">
-            <h1 class="text-lg font-bold">Agile Jewelries</h1>
-            <hr class="border-t-4 border-gray-800 my-4">
-            <video class="w-full rounded object-cover" autoplay muted loop controls loading="lazy">
-                <source src="assets/video/vid1.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </section>
+        <video class="w-full rounded object-cover" autoplay muted loop controls playsinline preload="none" poster="assets/img/men/men2.webp">
+            <source src="assets/video/vid1.webm" type="video/webm">
+            <source src="assets/video/vid1.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
 
         <hr class="border-t-4 border-gray-800 my-4">
 
@@ -46,21 +42,49 @@ html {
             <p class="text-sm">Japanese Cut Necklace & Bracelet Set (ALL IN ONE SET)</p>
 
             <div class="mt-4 space-y-4">
-                <img src="assets/img/men/men1.png" alt="Men Necklace" class="mx-auto rounded">
+                <!-- Main Necklace -->
+                <picture>
+                    <source srcset="assets/img/men/men1.webp" type="image/webp">
+                    <source srcset="assets/img/men/men1.png" type="image/png">
+                    <img src="assets/img/men/men1.png" alt="Men Necklace" class="mx-auto rounded">
+                </picture>
+
                 <!-- Main dynamic image -->
                 <div class="relative inline-block w-full">
-                    <img id="menBraceletDisplay" src="assets/img/men/men2.png" alt="Men Bracelet" class="mx-auto rounded">
+                    <picture>
+                        <source srcset="assets/img/men/men2.webp" type="image/webp">
+                        <source srcset="assets/img/men/men2.png" type="image/png">
+                        <img id="menBraceletDisplay" src="assets/img/men/men2.png" alt="Men Bracelet" class="mx-auto rounded">
+                    </picture>
                 </div>
+
                 <!-- Carousel with buttons -->
                 <div class="carousel-container">
                     <button class="carousel-btn prev" data-carousel="#menBraceletCarousel" aria-label="Previous Men's Bracelet Image">&#9664;</button>
+
                     <div id="menBraceletCarousel" class="carousel flex justify-center items-center gap-2" data-display="#menBraceletDisplay">
-                        <img src="assets/img/men/bracelet_men.png" class="h-28 rounded flex-shrink-0" alt="Men's Bracelet Option 1" loading="lazy">
-                        <img src="assets/img/men/hand_bracelet_men.png" class="h-28 rounded flex-shrink-0" alt="Men's Bracelet Option 2" loading="lazy">
-                        <img src="assets/img/men/hand_necklace_women.png" class="h-28 rounded flex-shrink-0" alt="Men's Bracelet Option 3" loading="lazy">
+                        <picture>
+                            <source srcset="assets/img/men/bracelet_men.webp" type="image/webp">
+                            <source srcset="assets/img/men/bracelet_men.png" type="image/png">
+                            <img src="assets/img/men/bracelet_men.png" class="h-28 rounded flex-shrink-0" alt="Men's Bracelet Option 1" loading="lazy">
+                        </picture>
+
+                        <picture>
+                            <source srcset="assets/img/men/hand_bracelet_men.webp" type="image/webp">
+                            <source srcset="assets/img/men/hand_bracelet_men.png" type="image/png">
+                            <img src="assets/img/men/hand_bracelet_men.png" class="h-28 rounded flex-shrink-0" alt="Men's Bracelet Option 2" loading="lazy">
+                        </picture>
+
+                        <picture>
+                            <source srcset="assets/img/men/hand_necklace_women.webp" type="image/webp">
+                            <source srcset="assets/img/men/hand_necklace_women.png" type="image/png">
+                            <img src="assets/img/men/hand_necklace_women.png" class="h-28 rounded flex-shrink-0" alt="Men's Bracelet Option 3" loading="lazy">
+                        </picture>
                     </div>
+
                     <button class="carousel-btn next" data-carousel="#menBraceletCarousel" aria-label="Next Men's Bracelet Image">&#9654;</button>
                 </div>
+
                 <div class="text-center font-bold">
                     <h2>Bracelet</h2>
                 </div>
@@ -69,20 +93,53 @@ html {
             <div class="mt-4 space-y-4">
                 <!-- Main dynamic image -->
                 <div class="relative inline-block w-full">
-                    <img id="menNecklaceDisplay" src="assets/img/men/necklace_men.png" alt="Men Necklace" class="mx-auto rounded">
+                    <picture>
+                        <source srcset="assets/img/men/necklace_men.webp" type="image/webp">
+                        <source srcset="assets/img/men/necklace_men.png" type="image/png">
+                        <img id="menNecklaceDisplay" src="assets/img/men/necklace_men.png" alt="Men Necklace" class="mx-auto rounded">
+                    </picture>
                 </div>
+
                 <!-- Carousel with buttons -->
                 <div class="carousel-container">
                     <button class="carousel-btn prev" data-carousel="#menNecklaceCarousel" aria-label="Previous Men's Necklace Image">&#9664;</button>
+
                     <div id="menNecklaceCarousel" class="carousel flex justify-center items-center gap-2 overflow-hidden" data-display="#menNecklaceDisplay">
-                        <img src="assets/img/men/necklace_men.png" class="h-28 rounded flex-shrink-0" alt="Men's Necklace Option 1" loading="lazy">
-                        <img src="assets/img/men/necklace_men2.png" class="h-28 rounded flex-shrink-0" alt="Men's Necklace Option 2" loading="lazy">
-                        <img src="assets/img/men/necklace_men3.png" class="h-28 rounded flex-shrink-0" alt="Men's Necklace Option 3" loading="lazy">
-                        <img src="assets/img/men/hand_necklace_women.png" class="h-28 rounded flex-shrink-0" alt="Men's Necklace Option 4" loading="lazy">
-                        <img src="assets/img/men/necklace_men2.png" class="h-28 rounded flex-shrink-0" alt="Men's Necklace Option 5" loading="lazy">
+
+                        <picture>
+                            <source srcset="assets/img/men/necklace_men.webp" type="image/webp">
+                            <source srcset="assets/img/men/necklace_men.png" type="image/png">
+                            <img src="assets/img/men/necklace_men.png" class="h-28 rounded flex-shrink-0" alt="Men's Necklace Option 1" loading="lazy">
+                        </picture>
+
+                        <picture>
+                            <source srcset="assets/img/men/necklace_men2.webp" type="image/webp">
+                            <source srcset="assets/img/men/necklace_men2.png" type="image/png">
+                            <img src="assets/img/men/necklace_men2.png" class="h-28 rounded flex-shrink-0" alt="Men's Necklace Option 2" loading="lazy">
+                        </picture>
+
+                        <picture>
+                            <source srcset="assets/img/men/necklace_men3.webp" type="image/webp">
+                            <source srcset="assets/img/men/necklace_men3.png" type="image/png">
+                            <img src="assets/img/men/necklace_men3.png" class="h-28 rounded flex-shrink-0" alt="Men's Necklace Option 3" loading="lazy">
+                        </picture>
+
+                        <picture>
+                            <source srcset="assets/img/men/hand_necklace_women.webp" type="image/webp">
+                            <source srcset="assets/img/men/hand_necklace_women.png" type="image/png">
+                            <img src="assets/img/men/hand_necklace_women.png" class="h-28 rounded flex-shrink-0" alt="Men's Necklace Option 4" loading="lazy">
+                        </picture>
+
+                        <picture>
+                            <source srcset="assets/img/men/necklace_men2.webp" type="image/webp">
+                            <source srcset="assets/img/men/necklace_men2.png" type="image/png">
+                            <img src="assets/img/men/necklace_men2.png" class="h-28 rounded flex-shrink-0" alt="Men's Necklace Option 5" loading="lazy">
+                        </picture>
                     </div>
+
                     <button class="carousel-btn next" data-carousel="#menNecklaceCarousel" aria-label="Next Men's Necklace Image">&#9654;</button>
                 </div>
+
                 <div class="text-center font-bold">
                     <h2>Necklace</h2>
                 </div>
@@ -103,21 +160,49 @@ html {
             <p class="text-sm">Japanese Cut Necklace & Bracelet Set (ALL IN ONE SET)</p>
 
             <div class="mt-4 space-y-4">
-                <img src="assets/img/women/women.png" alt="Women Necklace" class="mx-auto rounded">
+                <!-- Main Necklace -->
+                <picture>
+                    <source srcset="assets/img/women/women.webp" type="image/webp">
+                    <source srcset="assets/img/women/women.png" type="image/png">
+                    <img src="assets/img/women/women.png" alt="Women Necklace" class="mx-auto rounded">
+                </picture>
+
                 <!-- Main dynamic image -->
                 <div class="relative inline-block w-full">
-                    <img id="womenBraceletDisplay" src="assets/img/women/watch.png" alt="Women Bracelet" class="mx-auto rounded">
+                    <picture>
+                        <source srcset="assets/img/women/watch.webp" type="image/webp">
+                        <source srcset="assets/img/women/watch.png" type="image/png">
+                        <img id="womenBraceletDisplay" src="assets/img/women/watch.png" alt="Women Bracelet" class="mx-auto rounded">
+                    </picture>
                 </div>
+
                 <!-- Carousel with buttons -->
                 <div class="carousel-container">
                     <button class="carousel-btn prev" data-carousel="#womenBraceletCarousel" aria-label="Previous Women's Bracelet Image">&#9664;</button>
+
                     <div id="womenBraceletCarousel" class="carousel flex justify-center items-center gap-2 overflow-hidden" data-display="#womenBraceletDisplay">
-                        <img src="assets/img/women/bracelet1.png" class="h-28 rounded flex-shrink-0" alt="Women's Bracelet Option 1" loading="lazy">
-                        <img src="assets/img/women/bracelet2.png" class="h-28 rounded flex-shrink-0" alt="Women's Bracelet Option 2" loading="lazy">
-                        <img src="assets/img/women/bracelet3.png" class="h-28 rounded flex-shrink-0" alt="Women's Bracelet Option 3" loading="lazy">
+                        <picture>
+                            <source srcset="assets/img/women/bracelet1.webp" type="image/webp">
+                            <source srcset="assets/img/women/bracelet1.png" type="image/png">
+                            <img src="assets/img/women/bracelet1.png" class="h-28 rounded flex-shrink-0" alt="Women's Bracelet Option 1" loading="lazy">
+                        </picture>
+
+                        <picture>
+                            <source srcset="assets/img/women/bracelet2.webp" type="image/webp">
+                            <source srcset="assets/img/women/bracelet2.png" type="image/png">
+                            <img src="assets/img/women/bracelet2.png" class="h-28 rounded flex-shrink-0" alt="Women's Bracelet Option 2" loading="lazy">
+                        </picture>
+
+                        <picture>
+                            <source srcset="assets/img/women/bracelet3.webp" type="image/webp">
+                            <source srcset="assets/img/women/bracelet3.png" type="image/png">
+                            <img src="assets/img/women/bracelet3.png" class="h-28 rounded flex-shrink-0" alt="Women's Bracelet Option 3" loading="lazy">
+                        </picture>
                     </div>
+
                     <button class="carousel-btn next" data-carousel="#womenBraceletCarousel" aria-label="Next Women's Bracelet Image">&#9654;</button>
                 </div>
+
                 <div class="text-center font-bold">
                     <h2>Bracelet</h2>
                 </div>
@@ -126,19 +211,47 @@ html {
             <div class="mt-4 space-y-4">
                 <!-- Main dynamic image -->
                 <div class="relative inline-block w-full">
-                    <img id="womenNecklaceDisplay" src="assets/img/women/necklace1.png" alt="Women Necklace" class="mx-auto rounded">
+                    <picture>
+                        <source srcset="assets/img/women/necklace1.webp" type="image/webp">
+                        <source srcset="assets/img/women/necklace1.png" type="image/png">
+                        <img id="womenNecklaceDisplay" src="assets/img/women/necklace1.png" alt="Women Necklace" class="mx-auto rounded">
+                    </picture>
                 </div>
+
                 <!-- Carousel with buttons -->
                 <div class="carousel-container">
                     <button class="carousel-btn prev" data-carousel="#womenNecklaceCarousel" aria-label="Previous Women's Necklace Image">&#9664;</button>
+
                     <div id="womenNecklaceCarousel" class="carousel flex justify-center items-center gap-2 overflow-hidden" data-display="#womenNecklaceDisplay">
-                        <img src="assets/img/women/women.png" class="h-28 rounded flex-shrink-0" alt="Women's Necklace Option 1" loading="lazy">
-                        <img src="assets/img/women/necklace1.png" class="h-28 rounded flex-shrink-0" alt="Women's Necklace Option 2" loading="lazy">
-                        <img src="assets/img/women/necklace2.png" class="h-28 rounded flex-shrink-0" alt="Women's Necklace Option 3" loading="lazy">
-                        <img src="assets/img/women/necklace3.png" class="h-28 rounded flex-shrink-0" alt="Women's Necklace Option 4" loading="lazy">
+
+                        <picture>
+                            <source srcset="assets/img/women/women.webp" type="image/webp">
+                            <source srcset="assets/img/women/women.png" type="image/png">
+                            <img src="assets/img/women/women.png" class="h-28 rounded flex-shrink-0" alt="Women's Necklace Option 1" loading="lazy">
+                        </picture>
+
+                        <picture>
+                            <source srcset="assets/img/women/necklace1.webp" type="image/webp">
+                            <source srcset="assets/img/women/necklace1.png" type="image/png">
+                            <img src="assets/img/women/necklace1.png" class="h-28 rounded flex-shrink-0" alt="Women's Necklace Option 2" loading="lazy">
+                        </picture>
+
+                        <picture>
+                            <source srcset="assets/img/women/necklace2.webp" type="image/webp">
+                            <source srcset="assets/img/women/necklace2.png" type="image/png">
+                            <img src="assets/img/women/necklace2.png" class="h-28 rounded flex-shrink-0" alt="Women's Necklace Option 3" loading="lazy">
+                        </picture>
+
+                        <picture>
+                            <source srcset="assets/img/women/necklace3.webp" type="image/webp">
+                            <source srcset="assets/img/women/necklace3.png" type="image/png">
+                            <img src="assets/img/women/necklace3.png" class="h-28 rounded flex-shrink-0" alt="Women's Necklace Option 4" loading="lazy">
+                        </picture>
                     </div>
+
                     <button class="carousel-btn next" data-carousel="#womenNecklaceCarousel" aria-label="Next Women's Necklace Image">&#9654;</button>
                 </div>
+
                 <div class="text-center font-bold">
                     <h2>Necklace</h2>
                 </div>
@@ -236,38 +349,74 @@ html {
                     </div>
                 </div>
             </div>
+
             <div class="mt-6 space-y-6">
+                <!-- Review 1 -->
                 <div class="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg">
-                    <img src="assets/img/reviews/review1.png" class="w-40 h-40 rounded-lg object-cover hover:scale-105 transition-transform duration-200 cursor-pointer review-image" alt="Customer Review 1" data-large-src="assets/img/reviews/review1.png">
+                    <picture>
+                        <source srcset="assets/img/reviews/review1.webp" type="image/webp">
+                        <img src="assets/img/reviews/review1.png"
+                            class="w-40 h-40 rounded-lg object-cover hover:scale-105 transition-transform duration-200 cursor-pointer review-image"
+                            alt="Customer Review 1"
+                            loading="lazy"
+                            data-large-src="assets/img/reviews/review1.png">
+                    </picture>
                     <div class="flex-1">
                         <p class="text-base italic">“I received it already and it is beautiful ❤️ Thank you!”</p>
                         <p class="text-lg text-yellow-500 mt-1">★★★★★</p>
                         <p class="text-xs text-gray-600 mt-1">— Edwin C.</p>
                     </div>
                 </div>
+
+                <!-- Review 2 -->
                 <div class="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg">
                     <div class="flex-1 text-right">
                         <p class="text-base italic">“Thanks much, I already ordered twice… great quality”</p>
                         <p class="text-lg text-yellow-500 mt-1">★★★★★</p>
                         <p class="text-xs text-gray-600 mt-1">— Mark S.</p>
                     </div>
-                    <img src="assets/img/reviews/review2.png" class="w-40 h-40 rounded-lg object-cover hover:scale-105 transition-transform duration-200 cursor-pointer review-image" alt="Customer Review 2" data-large-src="assets/img/reviews/review2.png">
+                    <picture>
+                        <source srcset="assets/img/reviews/review2.webp" type="image/webp">
+                        <img src="assets/img/reviews/review2.png"
+                            class="w-40 h-40 rounded-lg object-cover hover:scale-105 transition-transform duration-200 cursor-pointer review-image"
+                            alt="Customer Review 2"
+                            loading="lazy"
+                            data-large-src="assets/img/reviews/review2.png">
+                    </picture>
                 </div>
+
+                <!-- Review 3 -->
                 <div class="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg">
-                    <img src="assets/img/reviews/review3.png" class="w-40 h-40 rounded-lg object-cover hover:scale-105 transition-transform duration-200 cursor-pointer review-image" alt="Customer Review 3" data-large-src="assets/img/reviews/review3.png">
+                    <picture>
+                        <source srcset="assets/img/reviews/review3.webp" type="image/webp">
+                        <img src="assets/img/reviews/review3.png"
+                            class="w-40 h-40 rounded-lg object-cover hover:scale-105 transition-transform duration-200 cursor-pointer review-image"
+                            alt="Customer Review 3"
+                            loading="lazy"
+                            data-large-src="assets/img/reviews/review3.png">
+                    </picture>
                     <div class="flex-1">
                         <p class="text-base italic">“Wowww this is my first time to this store and d ako nabigo sa expectation ko, so uulit at uulit ako hehehe 99% yan❤️”</p>
                         <p class="text-lg text-yellow-500 mt-1">★★★★★</p>
                         <p class="text-xs text-gray-600 mt-1">— Emily R.</p>
                     </div>
                 </div>
+
+                <!-- Review 4 -->
                 <div class="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg">
                     <div class="flex-1 text-right">
                         <p class="text-base italic">“Maraming salamat po natanggap ko na yung bracelet napakaganda po. oorder ako ulit with necklace na po”</p>
                         <p class="text-lg text-yellow-500 mt-1">★★★★★</p>
                         <p class="text-xs text-gray-600 mt-1">— Joshua P.</p>
                     </div>
-                    <img src="assets/img/reviews/review4.png" class="w-40 h-40 rounded-lg object-cover hover:scale-105 transition-transform duration-200 cursor-pointer review-image" alt="Customer Review 4" data-large-src="assets/img/reviews/review4.png">
+                    <picture>
+                        <source srcset="assets/img/reviews/review4.webp" type="image/webp">
+                        <img src="assets/img/reviews/review4.png"
+                            class="w-40 h-40 rounded-lg object-cover hover:scale-105 transition-transform duration-200 cursor-pointer review-image"
+                            alt="Customer Review 4"
+                            loading="lazy"
+                            data-large-src="assets/img/reviews/review4.png">
+                    </picture>
                 </div>
             </div>
         </section>
@@ -276,11 +425,18 @@ html {
             <div class="flex flex-col max-w-lg mx-auto p-4 space-y-6">
                 <!-- Top: image + main commitment -->
                 <div class="flex flex-col gap-4">
-                    <img
-                        src="assets/sec/gov.png"
-                        alt="Agile Jewelries quality badge"
-                        class="w-full h-48 object-contain rounded-md shadow-sm bg-white"
-                        loading="lazy" />
+                    <!-- Optimized Image with WebP + fallback + skeleton/blur loader -->
+                    <picture>
+                        <source srcset="assets/sec/gov.webp" type="image/webp">
+                        <img
+                            src="assets/sec/gov.png"
+                            alt="Agile Jewelries quality badge"
+                            class="w-full h-48 object-contain rounded-md shadow-sm bg-white transition duration-500 ease-in-out blur-sm"
+                            loading="lazy"
+                            onload="this.classList.remove('blur-sm')" />
+                    </picture>
+
+                    <!-- Text block -->
                     <div class="bg-white rounded-xl p-6 shadow-sm ring-1 ring-gray-100 text-center">
                         <h2 class="text-xl font-semibold text-gray-800 mb-2">Our Commitment</h2>
                         <p class="text-gray-600 leading-relaxed">

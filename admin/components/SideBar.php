@@ -1,3 +1,7 @@
+<?php
+$current = basename($_SERVER['PHP_SELF']);
+?>
+
 <div class="flex flex-col h-full p-4 overflow-auto">
     <!-- User Profile -->
     <div class="flex flex-col items-center border-b border-gray-200 pb-4">
@@ -6,7 +10,7 @@
             <?php echo htmlspecialchars($_SESSION['full_name'] ?? 'Admin'); ?>
         </h3>
         <p class="text-sm text-gray-600">
-            <?php echo htmlspecialchars($_SESSION['email'] ?? '' ); ?>
+            <?php echo htmlspecialchars($_SESSION['email'] ?? ''); ?>
         </p>
     </div>
     <!-- Navigation -->
@@ -41,20 +45,36 @@
                         </li>
                     </ul>
                 </li> -->
+                <?php
+                $current = basename($_SERVER['PHP_SELF']);
+                ?>
+
                 <li>
-                    <a href="analytics.php" class="flex items-center py-2 px-4 text-sm text-gray-600 hover:text-teal-700 hover:bg-gray-100">
+                    <a href="analytics.php"
+                        class="flex items-center py-2 px-4 text-sm 
+                  <?= $current === 'analytics.php' ? 'bg-teal-100 text-teal-700 font-semibold' : 'text-gray-600 hover:text-teal-700 hover:bg-gray-100' ?>">
                         <i class="fa-solid fa-chart-line mr-2"></i>
                         Analytics
                     </a>
                 </li>
                 <li>
-                    <a href="orders_overview.php" class="flex items-center py-2 px-4 text-sm text-gray-600 hover:text-teal-700 hover:bg-gray-100">
+                    <a href="orders_overview.php"
+                        class="flex items-center py-2 px-4 text-sm 
+                        <?= $current === 'orders_overview.php' ? 'bg-teal-100 text-teal-700 font-semibold' : 'text-gray-600 hover:text-teal-700 hover:bg-gray-100' ?>">
                         <i class="fa-solid fa-cart-shopping mr-2"></i>
                         Orders Overview
                     </a>
                 </li>
+                <li>
+                    <a href="manage_users.php"
+                        class="flex items-center py-2 px-4 text-sm 
+                        <?= $current === 'manage_users.php' ? 'bg-teal-100 text-teal-700 font-semibold' : 'text-gray-600 hover:text-teal-700 hover:bg-gray-100' ?>">
+                        <i class="fa-solid fa-users mr-2"></i>
+                        Manage Users
+                    </a>
+                </li>
             </ul>
-            
+
             <!-- <div class="my-2 border-t border-gray-200"></div>
 
             <h4 class="text-md font-semibold text-gray-700">Reports</h4>

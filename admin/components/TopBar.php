@@ -33,11 +33,13 @@ include_once "../config/database.php";
         </button>
     </div>
 </div>
+
 <!-- User Menu Dropdown -->
 <div id="user-menu" class="hidden absolute top-16 right-4 bg-white shadow-lg rounded-md py-2 w-48 z-30">
     <button class="w-full text-left px-4 py-2 hover:bg-gray-100" onclick="showChangePasswordModal()">Change Password</button>
     <button class="w-full text-left px-4 py-2 hover:bg-gray-100" onclick="logout()">Logout</button>
 </div>
+
 <!-- Change Password Modal -->
 <div id="change-password-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
     <div class="bg-white p-6 rounded-lg w-full max-w-md">
