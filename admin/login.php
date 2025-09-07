@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['CONTENT_TYPE']) && 
   if (empty($response['errors'])) {
     try {
       // Fetch user
-      $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
+      $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? AND STATUS = 'active' LIMIT 1");
       $stmt->execute([$email]);
       $user = $stmt->fetch();
 
