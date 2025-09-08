@@ -76,7 +76,9 @@ try {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agile Jewelries - Orders Overview</title>
-  <link rel="stylesheet" href="../css/output.css">
+  <!-- <link rel="stylesheet" href="../css/output.css"> -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
   <link rel="stylesheet" href="../assets/fontawesome/css/all.min.css">
 </head>
 
@@ -85,6 +87,11 @@ try {
   <header class="bg-white h-16 flex items-center fixed top-0 left-0 right-0 z-20">
     <?php include 'components/TopBar.php'; ?>
   </header>
+
+ <!-- Toast Notification -->
+  <div id="toast"
+    class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-sm px-4 py-2 rounded shadow-lg opacity-0 transition-opacity duration-300 z-50">
+  </div>
 
   <!-- Main Content -->
   <div class="flex min-h-[calc(100vh-4rem)] mt-16">
@@ -168,7 +175,7 @@ try {
         <!-- Orders Table -->
         <div class="bg-white rounded-b-lg shadow-md flex flex-col" style="height: calc(100vh - 220px);">
           <div class="overflow-auto flex-1">
-            <table id="orders-table" class="w-full text-sm text-left text-gray-600 mx-auto">
+            <table id="orders-table" class="w-full text-sm text-left text-gray-600 mx-auto overflow-auto">
               <thead class="bg-white">
                 <tr>
                   <th class="px-2 py-1 text-center">
@@ -179,6 +186,9 @@ try {
                   <th class="p-2">Full Name</th>
                   <th class="p-2">Contact No.</th>
                   <th class="p-2">Address</th>
+                  <th class="p-2">Barangay</th>
+                  <th class="p-2">City</th>
+                  <th class="p-2">Province</th>
                   <th class="p-2">Men's Set</th>
                   <th class="p-2">Women's Set</th>
                   <th class="p-2">Order Date</th>
@@ -207,13 +217,27 @@ try {
                     <td class="hidden">
                       <p><?= htmlspecialchars($order['id']) ?></p>
                     </td>
-                    <td class="p-2">
+                    <td class="p-2 cursor-pointer" title="<?= htmlspecialchars($order['customer_name']); ?>">
                       <p><?= htmlspecialchars($order['customer_name']); ?></p>
                     </td>
-                    <td class="p-2"><?= htmlspecialchars($order['phone_number']); ?></td>
+                    <td class="p-2 cursor-pointer" title="<?= htmlspecialchars($order['phone_number']); ?>">
+                      <?= htmlspecialchars($order['phone_number']); ?>
+                    </td>
                     <td class="p-2 max-w-[150px] truncate cursor-pointer"
-                      title="<?= htmlspecialchars($order['address'] . ', ' . $order['barangay'] . ', ' . $order['city'] . ', ' . $order['province']); ?>">
-                      <?= htmlspecialchars($order['address'] . ', ' . $order['barangay'] . ', ' . $order['city'] . ', ' . $order['province']); ?>
+                      title="<?= htmlspecialchars($order['address']); ?>">
+                      <?= htmlspecialchars($order['address']); ?>
+                    </td>
+                    <td class="p-2 max-w-[150px] truncate cursor-pointer"
+                      title="<?= htmlspecialchars($order['barangay']); ?>">
+                      <?= htmlspecialchars($order['barangay']); ?>
+                    </td>
+                    <td class="p-2 max-w-[150px] truncate cursor-pointer"
+                      title="<?= htmlspecialchars($order['city']); ?>">
+                      <?= htmlspecialchars($order['city']); ?>
+                    </td>
+                    <td class="p-2 max-w-[150px] truncate cursor-pointer"
+                      title="<?= htmlspecialchars($order['province']); ?>">
+                      <?= htmlspecialchars($order['province']); ?>
                     </td>
                     <td class="p-2 text-center"><?= htmlspecialchars($order['men_set']); ?></td>
                     <td class="p-2 text-center"><?= htmlspecialchars($order['women_set']); ?></td>
@@ -244,7 +268,7 @@ try {
           </div>
 
           <!-- Pagination -->
-          <div class="flex justify-between items-center p-4 bg-white border-t">
+          <div class="flex justify-between items-center p-4 bg-white">
             <p class="text-sm text-gray-600">
               Showing <?= count($orders) ?> of <?= $totalOrders ?> orders
             </p>
@@ -524,6 +548,84 @@ try {
         resetFilters();
       });
     }
+
+    // Copy to clipboard with fallback
+    function copyToClipboard(text, label) {
+      if (!text) {
+        console.warn("No text to copy");
+        return;
+      }
+
+      console.log(`Attempting to copy: ${text} (Label: ${label})`);
+
+      // Try modern Clipboard API
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(`Copied ${label}: ${text}`);
+        }).catch(err => {
+          console.error("Clipboard API failed:", err);
+          showFeedback("error", `Failed to copy ${label}: ${err.message}`);
+        });
+      } else {
+        // Fallback for non-HTTPS or older browsers
+        try {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+          textarea.style.position = "fixed";
+          textarea.style.opacity = "0";
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textarea);
+          showToast(`Copied ${label}: ${text}`);
+        } catch (err) {
+          console.error("Fallback copy failed:", err);
+          showFeedback("error", `Failed to copy ${label}: ${err.message}`);
+        }
+      }
+    }
+
+    // Toast logic
+    let toastTimeout;
+
+    function showToast(message) {
+      console.log("Showing toast:", message);
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.style.display = "block"; // Ensure visibility
+      toast.classList.remove("opacity-0");
+      toast.classList.add("opacity-100");
+
+      // Reset timeout if clicked repeatedly
+      if (toastTimeout) clearTimeout(toastTimeout);
+
+      toastTimeout = setTimeout(() => {
+        console.log("Hiding toast");
+        toast.classList.remove("opacity-100");
+        toast.classList.add("opacity-0");
+        setTimeout(() => {
+          toast.style.display = "none"; // Hide after transition
+        }, 300); // Match transition duration
+      }, 2000);
+    }
+
+    // Attach click listeners for copy-to-clipboard using event delegation
+    ordersTable.addEventListener("click", (e) => {
+      const td = e.target.closest("td");
+      if (!td) return;
+
+      // Get the index of the clicked <td>
+      const index = Array.from(td.parentNode.children).indexOf(td);
+      // Only handle columns 2-7 (Full Name, Contact No., Address, Barangay, City, Province)
+      if (index >= 2 && index <= 7) {
+        console.log(`Clicked <td> at index ${index}`);
+        const headers = Array.from(document.querySelectorAll("#orders-table thead tr th")).map(th => th.textContent.trim());
+        // Get text from title attribute (for truncated fields) or direct text content
+        const text = td.getAttribute("title") || (td.querySelector("p") ? td.querySelector("p").textContent.trim() : td.textContent.trim());
+        const column = headers[index] || "data";
+        copyToClipboard(text, column);
+      }
+    });
 
     function closeChangeStatusModal() {
       document.getElementById("change-status-modal").classList.add("hidden");

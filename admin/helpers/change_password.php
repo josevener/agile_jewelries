@@ -5,7 +5,7 @@ include_once "../../config/database.php";
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
-    echo json_encode(['success' => false, 'errors' => ['Unauthorized: Please log in.']]);
+    echo json_encode(value: ['success' => false, 'errors' => ['Unauthorized: Please log in.']]);
     exit;
 }
 
@@ -45,7 +45,6 @@ else {
         $errors[] = 'New password must contain at least one number.';
     }
 }
-
 
 if ($new_password !== $confirm_password) {
     $errors[] = 'New password and confirmation do not match.';
